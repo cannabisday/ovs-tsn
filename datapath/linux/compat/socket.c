@@ -15,18 +15,18 @@
 
 int ovs_sock_create_kern(struct net *net, int family, int type, int protocol, struct socket **res)
 {
-	int err;
+    int err;
 
-	err = sock_create_kern(family, type, protocol, res);
-	if (err < 0)
-		return err;
+    err = sock_create_kern(family, type, protocol, res);
+    if (err < 0)
+        return err;
 
-	sk_change_net((*res)->sk, net);
-	return err;
+    sk_change_net((*res)->sk, net);
+    return err;
 }
 #undef sk_release_kernel
 void ovs_sock_release(struct socket *sock)
 {
-	sk_release_kernel(sock->sk);
+    sk_release_kernel(sock->sk);
 }
 #endif

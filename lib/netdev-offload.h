@@ -42,15 +42,15 @@ struct ovs_action_push_tnl;
 
 /* Offload-capable (HW) netdev information */
 struct netdev_hw_info {
-    bool oor;		/* Out of Offload Resources ? */
+    bool oor;        /* Out of Offload Resources ? */
     int offload_count;  /* Pending (non-offloaded) flow count */
     int pending_count;  /* Offloaded flow count */
 };
 
 enum hw_info_type {
-    HW_INFO_TYPE_OOR = 1,		/* OOR state */
-    HW_INFO_TYPE_PEND_COUNT = 2,	/* Pending(non-offloaded) flow count */
-    HW_INFO_TYPE_OFFL_COUNT = 3		/* Offloaded flow count */
+    HW_INFO_TYPE_OOR = 1,        /* OOR state */
+    HW_INFO_TYPE_PEND_COUNT = 2,    /* Pending(non-offloaded) flow count */
+    HW_INFO_TYPE_OFFL_COUNT = 3        /* Offloaded flow count */
 };
 
 struct netdev_flow_dump {

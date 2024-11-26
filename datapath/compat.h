@@ -38,9 +38,9 @@
 /* Even though vanilla 3.10 kernel has grp->id, RHEL 7 kernel is missing
  * this field. */
 #ifdef HAVE_GENL_MULTICAST_GROUP_WITH_ID
-#define GROUP_ID(grp)	((grp)->id)
+#define GROUP_ID(grp)    ((grp)->id)
 #else
-#define GROUP_ID(grp)	0
+#define GROUP_ID(grp)    0
 #endif
 
 #ifdef HAVE_NF_IPV6_OPS_FRAGMENT
@@ -53,40 +53,40 @@ void ip6_output_exit(void);
 
 static inline int __init compat_init(void)
 {
-	int err;
+    int err;
 
-	err = ipfrag_init();
-	if (err)
-		return err;
+    err = ipfrag_init();
+    if (err)
+        return err;
 
-	err = nf_ct_frag6_init();
-	if (err)
-		goto error_ipfrag_exit;
+    err = nf_ct_frag6_init();
+    if (err)
+        goto error_ipfrag_exit;
 
-	err = ip6_output_init();
-	if (err)
-		goto error_frag6_exit;
+    err = ip6_output_init();
+    if (err)
+        goto error_frag6_exit;
 
-	err = rpl_nf_conncount_modinit();
-	if (err)
-		goto error_nf_conncount_exit;
+    err = rpl_nf_conncount_modinit();
+    if (err)
+        goto error_nf_conncount_exit;
 
-	return 0;
+    return 0;
 
 error_nf_conncount_exit:
-	rpl_nf_conncount_modexit();
+    rpl_nf_conncount_modexit();
 error_frag6_exit:
-	nf_ct_frag6_cleanup();
+    nf_ct_frag6_cleanup();
 error_ipfrag_exit:
-	rpl_ipfrag_fini();
-	return err;
+    rpl_ipfrag_fini();
+    return err;
 }
 static inline void compat_exit(void)
 {
-	rpl_nf_conncount_modexit();
-	ip6_output_exit();
-	nf_ct_frag6_cleanup();
-	rpl_ipfrag_fini();
+    rpl_nf_conncount_modexit();
+    ip6_output_exit();
+    nf_ct_frag6_cleanup();
+    rpl_ipfrag_fini();
 }
 
 #endif /* compat.h */

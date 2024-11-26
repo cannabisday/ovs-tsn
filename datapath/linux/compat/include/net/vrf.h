@@ -19,7 +19,7 @@
 
 static inline int vrf_master_ifindex_rcu(const struct net_device *dev)
 {
-	return 0;
+    return 0;
 }
 #endif
 

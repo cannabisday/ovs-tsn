@@ -1,11 +1,8 @@
-
-
-
+#include <config.h>
 #include "openvswitch/shash.h"
 #include "port_speed_map.h"
 #include <stdlib.h>
 #include <stdio.h>  // 에러 로그 출력을 위한 필요 헤더
-#include "openvswitch/vlog.h"
 #include <ifaddrs.h>     // getifaddrs, struct ifaddrs
 #include <arpa/inet.h>   // inet_ntop
 #include <netinet/in.h>  // struct sockaddr_in
@@ -14,8 +11,9 @@
 #include <sys/types.h>
 #include "utilities/udp_client.h"
 #include "utilities/udp_client.c"
+#include "openvswitch/vlog.h"
 
-VLOG_DEFINE_THIS_MODULE(psm);
+VLOG_DEFINE_THIS_MODULE(port_speed_map); // 고유 이름 사용
 
 struct shash port_speed_map;
 

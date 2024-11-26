@@ -8,10 +8,10 @@
 // SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 /* Copyright (C) 2019 Netronome Systems, Inc. */
 
-#define TCA_MPLS_ACT_POP	1
-#define TCA_MPLS_ACT_PUSH	2
-#define TCA_MPLS_ACT_MODIFY	3
-#define TCA_MPLS_ACT_DEC_TTL	4
+#define TCA_MPLS_ACT_POP    1
+#define TCA_MPLS_ACT_PUSH    2
+#define TCA_MPLS_ACT_MODIFY    3
+#define TCA_MPLS_ACT_DEC_TTL    4
 
 struct tc_mpls {
        tc_gen;         /* generic TC action fields. */

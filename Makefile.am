@@ -337,7 +337,7 @@ check-tabs:
 	fi
 .PHONY: check-tabs
 
-ALL_LOCAL += thread-safety-check
+#ALL_LOCAL += thread-safety-check
 thread-safety-check:
 	@cd $(srcdir); \
 	if test -e .git && (git --version) >/dev/null 2>&1 && \

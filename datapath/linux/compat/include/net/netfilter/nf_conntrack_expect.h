@@ -10,10 +10,10 @@
 
 static inline struct nf_conntrack_expect *
 rpl___nf_ct_expect_find(struct net *net,
-			const struct nf_conntrack_zone *zone,
-			const struct nf_conntrack_tuple *tuple)
+            const struct nf_conntrack_zone *zone,
+            const struct nf_conntrack_tuple *tuple)
 {
-	return __nf_ct_expect_find(net, zone->id, tuple);
+    return __nf_ct_expect_find(net, zone->id, tuple);
 }
 #define __nf_ct_expect_find rpl___nf_ct_expect_find
 

@@ -7,14 +7,14 @@
 
 #ifndef HAVE_BOOL_TYPE
 enum {
-	false   = 0,
-	true    = 1
+    false   = 0,
+    true    = 1
 };
 #endif /* !HAVE_BOOL_TYPE */
 
 #ifndef offsetofend
 #define offsetofend(TYPE, MEMBER) \
-	(offsetof(TYPE, MEMBER)	+ sizeof(((TYPE *)0)->MEMBER))
+    (offsetof(TYPE, MEMBER)    + sizeof(((TYPE *)0)->MEMBER))
 #endif
 
 #endif /* __KERNEL__ */

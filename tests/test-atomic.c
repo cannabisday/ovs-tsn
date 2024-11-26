@@ -185,7 +185,7 @@ static ATOMIC(struct atomic_aux *) paux = ATOMIC_VAR_INIT(NULL);
 static struct atomic_aux *auxes = NULL;
 
 #define ATOMIC_ITEM_COUNT 1000000
-#define	DURATION 5000
+#define    DURATION 5000
 
 static void *
 atomic_consumer(void * arg1 OVS_UNUSED)

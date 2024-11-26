@@ -8,9 +8,9 @@
 
 #ifndef HAVE_INET_GET_LOCAL_PORT_RANGE_USING_NET
 static inline void rpl_inet_get_local_port_range(struct net *net, int *low,
-					     int *high)
+                         int *high)
 {
-	inet_get_local_port_range(low, high);
+    inet_get_local_port_range(low, high);
 }
 #define inet_get_local_port_range rpl_inet_get_local_port_range
 
@@ -22,39 +22,39 @@ static inline void rpl_inet_get_local_port_range(struct net *net, int *low,
 
 /* IPv4 datagram length is stored into 16bit field (tot_len) */
 #ifndef IP_MAX_MTU
-#define IP_MAX_MTU	0xFFFFU
+#define IP_MAX_MTU    0xFFFFU
 #endif
 
 #ifndef HAVE_IP_SKB_DST_MTU
 static inline bool rpl_ip_sk_use_pmtu(const struct sock *sk)
 {
-	return inet_sk(sk)->pmtudisc < IP_PMTUDISC_PROBE;
+    return inet_sk(sk)->pmtudisc < IP_PMTUDISC_PROBE;
 }
 #define ip_sk_use_pmtu rpl_ip_sk_use_pmtu
 
 static inline unsigned int ip_dst_mtu_maybe_forward(const struct dst_entry *dst,
-						    bool forwarding)
+                            bool forwarding)
 {
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,14,0)
-	struct net *net = dev_net(dst->dev);
+    struct net *net = dev_net(dst->dev);
 
-	if (net->ipv4.sysctl_ip_fwd_use_pmtu ||
-	    dst_metric_locked(dst, RTAX_MTU) ||
-	    !forwarding)
-		return dst_mtu(dst);
+    if (net->ipv4.sysctl_ip_fwd_use_pmtu ||
+        dst_metric_locked(dst, RTAX_MTU) ||
+        !forwarding)
+        return dst_mtu(dst);
 #endif
 
-	return min(dst->dev->mtu, IP_MAX_MTU);
+    return min(dst->dev->mtu, IP_MAX_MTU);
 }
 
 static inline unsigned int rpl_ip_skb_dst_mtu(const struct sk_buff *skb)
 {
-	if (!skb->sk || ip_sk_use_pmtu(skb->sk)) {
-		bool forwarding = IPCB(skb)->flags & IPSKB_FORWARDED;
-		return ip_dst_mtu_maybe_forward(skb_dst(skb), forwarding);
-	} else {
-		return min(skb_dst(skb)->dev->mtu, IP_MAX_MTU);
-	}
+    if (!skb->sk || ip_sk_use_pmtu(skb->sk)) {
+        bool forwarding = IPCB(skb)->flags & IPSKB_FORWARDED;
+        return ip_dst_mtu_maybe_forward(skb_dst(skb), forwarding);
+    } else {
+        return min(skb_dst(skb)->dev->mtu, IP_MAX_MTU);
+    }
 }
 #define ip_skb_dst_mtu rpl_ip_skb_dst_mtu
 #endif /* HAVE_IP_SKB_DST_MTU */
@@ -78,15 +78,15 @@ static inline unsigned int rpl_ip_skb_dst_mtu(const struct sk_buff *skb)
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,2,0)
 static inline bool ip_defrag_user_in_between(u32 user,
-					     enum ip_defrag_users lower_bond,
-					     enum ip_defrag_users upper_bond)
+                         enum ip_defrag_users lower_bond,
+                         enum ip_defrag_users upper_bond)
 {
-	return user >= lower_bond && user <= upper_bond;
+    return user >= lower_bond && user <= upper_bond;
 }
 #endif /* < v4.2 */
 
 int rpl_ip_do_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
-		       int (*output)(OVS_VPORT_OUTPUT_PARAMS));
+               int (*output)(OVS_VPORT_OUTPUT_PARAMS));
 #define ip_do_fragment rpl_ip_do_fragment
 
 /* If backporting IP defrag, then init/exit functions need to be called from
@@ -104,10 +104,10 @@ void ovs_netns_frags_exit(struct net *net);
 
 #ifndef HAVE_IP_DO_FRAGMENT_TAKES_NET
 static inline int rpl_ip_do_fragment(struct net *net, struct sock *sk,
-				     struct sk_buff *skb,
-				     int (*output)(OVS_VPORT_OUTPUT_PARAMS))
+                     struct sk_buff *skb,
+                     int (*output)(OVS_VPORT_OUTPUT_PARAMS))
 {
-	return ip_do_fragment(sk, skb, output);
+    return ip_do_fragment(sk, skb, output);
 }
 #define ip_do_fragment rpl_ip_do_fragment
 #endif /* IP_DO_FRAGMENT_TAKES_NET */
@@ -118,11 +118,11 @@ static inline int rpl_ip_do_fragment(struct net *net, struct sock *sk,
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,5,0)
 static inline int rpl_ip_defrag(struct net *net, struct sk_buff *skb, u32 user)
 {
-	skb_orphan(skb);
+    skb_orphan(skb);
 #ifndef HAVE_IP_DEFRAG_TAKES_NET
-	return ip_defrag(skb, user);
+    return ip_defrag(skb, user);
 #else
-	return ip_defrag(net, skb, user);
+    return ip_defrag(net, skb, user);
 #endif
 }
 #define ip_defrag rpl_ip_defrag

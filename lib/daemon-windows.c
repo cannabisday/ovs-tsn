@@ -30,8 +30,8 @@
 VLOG_DEFINE_THIS_MODULE(daemon_windows);
 
 /* Constants for flock function */
-#define	LOCK_SHARED	0x0                     /* Shared lock. */
-#define	LOCK_UNLOCK	0x80000000              /* Unlock. Custom value. */
+#define    LOCK_SHARED    0x0                     /* Shared lock. */
+#define    LOCK_UNLOCK    0x80000000              /* Unlock. Custom value. */
 
 static bool service_create;          /* Was --service specified? */
 static bool service_started;         /* Have we dispatched service to start? */

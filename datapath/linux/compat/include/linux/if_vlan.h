@@ -24,32 +24,32 @@
  * acceptable.
  */
 #define vlan_insert_tag_set_proto(skb, proto, vlan_tci) \
-	rpl_vlan_insert_tag_set_proto(skb, proto, vlan_tci)
+    rpl_vlan_insert_tag_set_proto(skb, proto, vlan_tci)
 static inline struct sk_buff *rpl_vlan_insert_tag_set_proto(struct sk_buff *skb,
-							    __be16 vlan_proto,
-							    u16 vlan_tci)
+                                __be16 vlan_proto,
+                                u16 vlan_tci)
 {
-	struct vlan_ethhdr *veth;
+    struct vlan_ethhdr *veth;
 
-	if (skb_cow_head(skb, VLAN_HLEN) < 0) {
-		kfree_skb(skb);
-		return NULL;
-	}
-	veth = (struct vlan_ethhdr *)skb_push(skb, VLAN_HLEN);
+    if (skb_cow_head(skb, VLAN_HLEN) < 0) {
+        kfree_skb(skb);
+        return NULL;
+    }
+    veth = (struct vlan_ethhdr *)skb_push(skb, VLAN_HLEN);
 
-	/* Move the mac addresses to the beginning of the new header. */
-	memmove(skb->data, skb->data + VLAN_HLEN, 2 * ETH_ALEN);
-	skb->mac_header -= VLAN_HLEN;
+    /* Move the mac addresses to the beginning of the new header. */
+    memmove(skb->data, skb->data + VLAN_HLEN, 2 * ETH_ALEN);
+    skb->mac_header -= VLAN_HLEN;
 
-	/* first, the ethernet type */
-	veth->h_vlan_proto = vlan_proto;
+    /* first, the ethernet type */
+    veth->h_vlan_proto = vlan_proto;
 
-	/* now, the TCI */
-	veth->h_vlan_TCI = htons(vlan_tci);
+    /* now, the TCI */
+    veth->h_vlan_TCI = htons(vlan_tci);
 
-	skb->protocol = vlan_proto;
+    skb->protocol = vlan_proto;
 
-	return skb;
+    return skb;
 }
 #endif
 
@@ -64,10 +64,10 @@ static inline struct sk_buff *rpl_vlan_insert_tag_set_proto(struct sk_buff *skb,
 static inline void rpl_vlan_hwaccel_clear_tag(struct sk_buff *skb)
 {
 #ifdef HAVE_SKBUFF_VLAN_PRESENT
-	skb->vlan_present = 0;
+    skb->vlan_present = 0;
 #else
-	skb->vlan_tci = 0;
-	skb->vlan_proto = 0;
+    skb->vlan_tci = 0;
+    skb->vlan_proto = 0;
 #endif
 }
 #endif
@@ -85,11 +85,11 @@ static inline void rpl_vlan_hwaccel_clear_tag(struct sk_buff *skb)
  */
 static inline struct sk_buff *__vlan_hwaccel_push_inside(struct sk_buff *skb)
 {
-	skb = vlan_insert_tag_set_proto(skb, skb->vlan_proto,
-					vlan_tx_tag_get(skb));
-	if (likely(skb))
-		skb->vlan_tci = 0;
-	return skb;
+    skb = vlan_insert_tag_set_proto(skb, skb->vlan_proto,
+                    vlan_tx_tag_get(skb));
+    if (likely(skb))
+        skb->vlan_tci = 0;
+    return skb;
 }
 /*
  * vlan_hwaccel_push_inside - pushes vlan tag to the payload
@@ -103,9 +103,9 @@ static inline struct sk_buff *__vlan_hwaccel_push_inside(struct sk_buff *skb)
  */
 static inline struct sk_buff *vlan_hwaccel_push_inside(struct sk_buff *skb)
 {
-	if (vlan_tx_tag_present(skb))
-		skb = __vlan_hwaccel_push_inside(skb);
-	return skb;
+    if (vlan_tx_tag_present(skb))
+        skb = __vlan_hwaccel_push_inside(skb);
+    return skb;
 }
 #endif
 
@@ -118,57 +118,57 @@ static inline struct sk_buff *vlan_hwaccel_push_inside(struct sk_buff *skb)
  */
 static inline bool eth_type_vlan(__be16 ethertype)
 {
-	switch (ethertype) {
-	case htons(ETH_P_8021Q):
-	case htons(ETH_P_8021AD):
-		return true;
-	default:
-		return false;
-	}
+    switch (ethertype) {
+    case htons(ETH_P_8021Q):
+    case htons(ETH_P_8021AD):
+        return true;
+    default:
+        return false;
+    }
 }
 #endif
 
 /* All of these were introduced in a single commit preceding 2.6.33, so
  * presumably all of them or none of them are present. */
 #ifndef VLAN_PRIO_MASK
-#define VLAN_PRIO_MASK		0xe000 /* Priority Code Point */
-#define VLAN_PRIO_SHIFT		13
-#define VLAN_CFI_MASK		0x1000 /* Canonical Format Indicator */
-#define VLAN_TAG_PRESENT	VLAN_CFI_MASK
+#define VLAN_PRIO_MASK        0xe000 /* Priority Code Point */
+#define VLAN_PRIO_SHIFT        13
+#define VLAN_CFI_MASK        0x1000 /* Canonical Format Indicator */
+#define VLAN_TAG_PRESENT    VLAN_CFI_MASK
 #endif
 
 #ifndef HAVE_VLAN_SET_ENCAP_PROTO
 static inline void vlan_set_encap_proto(struct sk_buff *skb, struct vlan_hdr *vhdr)
 {
-	__be16 proto;
-	unsigned char *rawp;
+    __be16 proto;
+    unsigned char *rawp;
 
-	/*
-	 * Was a VLAN packet, grab the encapsulated protocol, which the layer
-	 * three protocols care about.
-	 */
+    /*
+     * Was a VLAN packet, grab the encapsulated protocol, which the layer
+     * three protocols care about.
+     */
 
-	proto = vhdr->h_vlan_encapsulated_proto;
-	if (ntohs(proto) >= 1536) {
-		skb->protocol = proto;
-		return;
-	}
+    proto = vhdr->h_vlan_encapsulated_proto;
+    if (ntohs(proto) >= 1536) {
+        skb->protocol = proto;
+        return;
+    }
 
-	rawp = skb->data;
-	if (*(unsigned short *) rawp == 0xFFFF)
-		/*
-		 * This is a magic hack to spot IPX packets. Older Novell
-		 * breaks the protocol design and runs IPX over 802.3 without
-		 * an 802.2 LLC layer. We look for FFFF which isn't a used
-		 * 802.2 SSAP/DSAP. This won't work for fault tolerant netware
-		 * but does for the rest.
-		 */
-		skb->protocol = htons(ETH_P_802_3);
-	else
-		/*
-		 * Real 802.2 LLC
-		 */
-		skb->protocol = htons(ETH_P_802_2);
+    rawp = skb->data;
+    if (*(unsigned short *) rawp == 0xFFFF)
+        /*
+         * This is a magic hack to spot IPX packets. Older Novell
+         * breaks the protocol design and runs IPX over 802.3 without
+         * an 802.2 LLC layer. We look for FFFF which isn't a used
+         * 802.2 SSAP/DSAP. This won't work for fault tolerant netware
+         * but does for the rest.
+         */
+        skb->protocol = htons(ETH_P_802_3);
+    else
+        /*
+         * Real 802.2 LLC
+         */
+        skb->protocol = htons(ETH_P_802_2);
 }
 #endif
 
@@ -179,24 +179,24 @@ static inline void vlan_set_encap_proto(struct sk_buff *skb, struct vlan_hdr *vh
 #define __vlan_insert_tag(skb, proto, tci) rpl_vlan_insert_tag(skb, tci)
 static inline int rpl_vlan_insert_tag(struct sk_buff *skb, u16 vlan_tci)
 {
-	struct vlan_ethhdr *veth;
+    struct vlan_ethhdr *veth;
 
-	if (skb_cow_head(skb, VLAN_HLEN) < 0)
-		return -ENOMEM;
+    if (skb_cow_head(skb, VLAN_HLEN) < 0)
+        return -ENOMEM;
 
-	veth = (struct vlan_ethhdr *)skb_push(skb, VLAN_HLEN);
+    veth = (struct vlan_ethhdr *)skb_push(skb, VLAN_HLEN);
 
-	/* Move the mac addresses to the beginning of the new header. */
-	memmove(skb->data, skb->data + VLAN_HLEN, 2 * ETH_ALEN);
-	skb->mac_header -= VLAN_HLEN;
+    /* Move the mac addresses to the beginning of the new header. */
+    memmove(skb->data, skb->data + VLAN_HLEN, 2 * ETH_ALEN);
+    skb->mac_header -= VLAN_HLEN;
 
-	/* first, the ethernet type */
-	veth->h_vlan_proto = htons(ETH_P_8021Q);
+    /* first, the ethernet type */
+    veth->h_vlan_proto = htons(ETH_P_8021Q);
 
-	/* now, the TCI */
-	veth->h_vlan_TCI = htons(vlan_tci);
+    /* now, the TCI */
+    veth->h_vlan_TCI = htons(vlan_tci);
 
-	return 0;
+    return 0;
 }
 #endif
 
@@ -208,39 +208,39 @@ static inline int rpl_vlan_insert_tag(struct sk_buff *skb, u16 vlan_tci)
 #ifndef HAVE_VLAN_GET_PROTOCOL
 
 static inline __be16 __vlan_get_protocol(struct sk_buff *skb, __be16 type,
-					 int *depth)
+                     int *depth)
 {
-	unsigned int vlan_depth = skb->mac_len;
+    unsigned int vlan_depth = skb->mac_len;
 
-	/* if type is 802.1Q/AD then the header should already be
-	 * present at mac_len - VLAN_HLEN (if mac_len > 0), or at
-	 * ETH_HLEN otherwise
-	 */
-	if (eth_type_vlan(type)) {
-		if (vlan_depth) {
-			if (WARN_ON(vlan_depth < VLAN_HLEN))
-				return 0;
-			vlan_depth -= VLAN_HLEN;
-		} else {
-			vlan_depth = ETH_HLEN;
-		}
-		do {
-			struct vlan_hdr *vh;
+    /* if type is 802.1Q/AD then the header should already be
+     * present at mac_len - VLAN_HLEN (if mac_len > 0), or at
+     * ETH_HLEN otherwise
+     */
+    if (eth_type_vlan(type)) {
+        if (vlan_depth) {
+            if (WARN_ON(vlan_depth < VLAN_HLEN))
+                return 0;
+            vlan_depth -= VLAN_HLEN;
+        } else {
+            vlan_depth = ETH_HLEN;
+        }
+        do {
+            struct vlan_hdr *vh;
 
-			if (unlikely(!pskb_may_pull(skb,
-						    vlan_depth + VLAN_HLEN)))
-				return 0;
+            if (unlikely(!pskb_may_pull(skb,
+                            vlan_depth + VLAN_HLEN)))
+                return 0;
 
-			vh = (struct vlan_hdr *)(skb->data + vlan_depth);
-			type = vh->h_vlan_encapsulated_proto;
-			vlan_depth += VLAN_HLEN;
-		} while (eth_type_vlan(type));
-	}
+            vh = (struct vlan_hdr *)(skb->data + vlan_depth);
+            type = vh->h_vlan_encapsulated_proto;
+            vlan_depth += VLAN_HLEN;
+        } while (eth_type_vlan(type));
+    }
 
-	if (depth)
-		*depth = vlan_depth;
+    if (depth)
+        *depth = vlan_depth;
 
-	return type;
+    return type;
 }
 
 /**
@@ -252,7 +252,7 @@ static inline __be16 __vlan_get_protocol(struct sk_buff *skb, __be16 type,
  */
 static inline __be16 vlan_get_protocol(struct sk_buff *skb)
 {
-	return __vlan_get_protocol(skb, skb->protocol, NULL);
+    return __vlan_get_protocol(skb, skb->protocol, NULL);
 }
 
 #endif
@@ -267,11 +267,11 @@ static inline __be16 vlan_get_protocol(struct sk_buff *skb)
  */
 static inline bool skb_vlan_tagged(const struct sk_buff *skb)
 {
-	if (!skb_vlan_tag_present(skb) &&
-	    likely(!eth_type_vlan(skb->protocol)))
-		return false;
+    if (!skb_vlan_tag_present(skb) &&
+        likely(!eth_type_vlan(skb->protocol)))
+        return false;
 
-	return true;
+    return true;
 }
 
 /**
@@ -283,24 +283,24 @@ static inline bool skb_vlan_tagged(const struct sk_buff *skb)
  */
 static inline bool skb_vlan_tagged_multi(const struct sk_buff *skb)
 {
-	__be16 protocol = skb->protocol;
+    __be16 protocol = skb->protocol;
 
-	if (!skb_vlan_tag_present(skb)) {
-		struct vlan_ethhdr *veh;
+    if (!skb_vlan_tag_present(skb)) {
+        struct vlan_ethhdr *veh;
 
-		if (likely(!eth_type_vlan(protocol)))
-			return false;
+        if (likely(!eth_type_vlan(protocol)))
+            return false;
 
-		veh = (struct vlan_ethhdr *)skb->data;
-		protocol = veh->h_vlan_encapsulated_proto;
-	}
+        veh = (struct vlan_ethhdr *)skb->data;
+        protocol = veh->h_vlan_encapsulated_proto;
+    }
 
-	if (!eth_type_vlan(protocol))
-		return false;
+    if (!eth_type_vlan(protocol))
+        return false;
 
-	return true;
+    return true;
 }
 
 #endif /* HAVE_SKB_VLAN_TAGGED */
 
-#endif	/* linux/if_vlan.h wrapper */
+#endif    /* linux/if_vlan.h wrapper */

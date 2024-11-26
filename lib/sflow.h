@@ -82,7 +82,7 @@ typedef struct _SFLSampled_header {
 
 typedef struct _SFLSampled_ethernet {
     u_int32_t eth_len;       /* The length of the MAC packet excluding
-				lower layer encapsulations */
+                lower layer encapsulations */
     struct eth_addr src_mac;    /* 6 bytes */
     u_int8_t pad1[2];           /* 2 pad */
     struct eth_addr dst_mac;
@@ -94,7 +94,7 @@ typedef struct _SFLSampled_ethernet {
 
 typedef struct _SFLSampled_ipv4 {
     u_int32_t length;      /* The length of the IP packet
-			      excluding lower layer encapsulations */
+                  excluding lower layer encapsulations */
     u_int32_t protocol;    /* IP Protocol type (for example, TCP = 6, UDP = 17) */
     SFLIPv4   src_ip;      /* Source IP Address */
     SFLIPv4   dst_ip;      /* Destination IP Address */
@@ -108,7 +108,7 @@ typedef struct _SFLSampled_ipv4 {
 
 typedef struct _SFLSampled_ipv6 {
     u_int32_t length;       /* The length of the IP packet
-			       excluding lower layer encapsulations */
+                   excluding lower layer encapsulations */
     u_int32_t protocol;     /* IP Protocol type (for example, TCP = 6, UDP = 17) */
     SFLIPv6   src_ip;       /* Source IP Address */
     SFLIPv6   dst_ip;       /* Destination IP Address */
@@ -147,14 +147,14 @@ typedef struct _SFLExtended_as_path_segment {
     u_int32_t type;   /* enum SFLExtended_as_path_segment_type */
     u_int32_t length; /* number of AS numbers in set/sequence */
     union {
-	u_int32_t *set;
-	u_int32_t *seq;
+    u_int32_t *set;
+    u_int32_t *seq;
     } as;
 } SFLExtended_as_path_segment;
 
 typedef struct _SFLExtended_gateway {
     SFLAddress nexthop;                       /* Address of the border router that should
-						 be used for the destination network */
+                         be used for the destination network */
     u_int32_t as;                             /* AS number for this gateway */
     u_int32_t src_as;                         /* AS number of source (origin) */
     u_int32_t src_peer_as;                    /* AS number of source peer */
@@ -174,8 +174,8 @@ typedef struct _SFLString {
 
 typedef struct _SFLExtended_user {
     u_int32_t src_charset;  /* MIBEnum value of character set used to encode a string - See RFC 2978
-			       Where possible UTF-8 encoding (MIBEnum=106) should be used. A value
-			       of zero indicates an unknown encoding. */
+                   Where possible UTF-8 encoding (MIBEnum=106) should be used. A value
+                   of zero indicates an unknown encoding. */
     SFLString src_user;
     u_int32_t dst_charset;
     SFLString dst_user;
@@ -191,7 +191,7 @@ enum SFLExtended_url_direction {
 typedef struct _SFLExtended_url {
     u_int32_t direction;   /* enum SFLExtended_url_direction */
     SFLString url;         /* URL associated with the packet flow.
-			      Must be URL encoded */
+                  Must be URL encoded */
     SFLString host;        /* The host field from the HTTP header */
 } SFLExtended_url;
 
@@ -270,9 +270,9 @@ typedef struct _SFLExtended_mpls_LDP_FEC {
 typedef SFLLabelStack SFLVlanStack;
 typedef struct _SFLExtended_vlan_tunnel {
     SFLVlanStack stack;  /* List of stripped 802.1Q TPID/TCI layers. Each
-			    TPID,TCI pair is represented as a single 32 bit
-			    integer. Layers listed from outermost to
-			    innermost. */
+                TPID,TCI pair is represented as a single 32 bit
+                integer. Layers listed from outermost to
+                innermost. */
 } SFLExtended_vlan_tunnel;
 
 typedef struct _SFLExtended_vni {
@@ -343,31 +343,31 @@ typedef struct _SFLFlow_sample {
     /* u_int32_t tag;    */         /* SFL_sample_tag -- enterprise = 0 : format = 1 */
     /* u_int32_t length; */
     u_int32_t sequence_number;      /* Incremented with each flow sample
-				       generated */
+                       generated */
     u_int32_t source_id;            /* fsSourceId */
     u_int32_t sampling_rate;        /* fsPacketSamplingRate */
     u_int32_t sample_pool;          /* Total number of packets that could have been
-				       sampled (i.e. packets skipped by sampling
-				       process + total number of samples) */
+                       sampled (i.e. packets skipped by sampling
+                       process + total number of samples) */
     u_int32_t drops;                /* Number of times a packet was dropped due to
-				       lack of resources */
+                       lack of resources */
     u_int32_t input;                /* SNMP ifIndex of input interface.
-				       0 if interface is not known. */
+                       0 if interface is not known. */
     u_int32_t output;               /* SNMP ifIndex of output interface,
-				       0 if interface is not known.
-				       Set most significant bit to indicate
-				       multiple destination interfaces
-				       (i.e. in case of broadcast or multicast)
-				       and set lower order bits to indicate
-				       number of destination interfaces.
-				       Examples:
-				       0x00000002  indicates ifIndex = 2
-				       0x00000000  ifIndex unknown.
-				       0x80000007  indicates a packet sent
-				       to 7 interfaces.
-				       0x80000000  indicates a packet sent to
-				       an unknown number of
-				       interfaces greater than 1.*/
+                       0 if interface is not known.
+                       Set most significant bit to indicate
+                       multiple destination interfaces
+                       (i.e. in case of broadcast or multicast)
+                       and set lower order bits to indicate
+                       number of destination interfaces.
+                       Examples:
+                       0x00000002  indicates ifIndex = 2
+                       0x00000000  ifIndex unknown.
+                       0x80000007  indicates a packet sent
+                       to 7 interfaces.
+                       0x80000000  indicates a packet sent to
+                       an unknown number of
+                       interfaces greater than 1.*/
     u_int32_t num_elements;
     SFLFlow_sample_element *elements;
 } SFLFlow_sample;
@@ -378,21 +378,21 @@ typedef struct _SFLFlow_sample_expanded {
     /* u_int32_t tag;    */         /* SFL_sample_tag -- enterprise = 0 : format = 1 */
     /* u_int32_t length; */
     u_int32_t sequence_number;      /* Incremented with each flow sample
-				       generated */
+                       generated */
     u_int32_t ds_class;             /* EXPANDED */
     u_int32_t ds_index;             /* EXPANDED */
     u_int32_t sampling_rate;        /* fsPacketSamplingRate */
     u_int32_t sample_pool;          /* Total number of packets that could have been
-				       sampled (i.e. packets skipped by sampling
-				       process + total number of samples) */
+                       sampled (i.e. packets skipped by sampling
+                       process + total number of samples) */
     u_int32_t drops;                /* Number of times a packet was dropped due to
-				       lack of resources */
+                       lack of resources */
     u_int32_t inputFormat;          /* EXPANDED */
     u_int32_t input;                /* SNMP ifIndex of input interface.
-				       0 if interface is not known. */
+                       0 if interface is not known. */
     u_int32_t outputFormat;         /* EXPANDED */
     u_int32_t output;               /* SNMP ifIndex of output interface,
-				       0 if interface is not known. */
+                       0 if interface is not known. */
     u_int32_t num_elements;
     SFLFlow_sample_element *elements;
 } SFLFlow_sample_expanded;
@@ -409,11 +409,11 @@ typedef struct _SFLIf_counters {
     u_int32_t ifType;
     u_int64_t ifSpeed;
     u_int32_t ifDirection;        /* Derived from MAU MIB (RFC 2668)
-				     0 = unknown, 1 = full-duplex,
-				     2 = half-duplex, 3 = in, 4 = out */
+                     0 = unknown, 1 = full-duplex,
+                     2 = half-duplex, 3 = in, 4 = out */
     u_int32_t ifStatus;           /* bit field with the following bits assigned:
-				     bit 0 = ifAdminStatus (0 = down, 1 = up)
-				     bit 1 = ifOperStatus (0 = down, 1 = up) */
+                     bit 0 = ifAdminStatus (0 = down, 1 = up)
+                     bit 1 = ifOperStatus (0 = down, 1 = up) */
     u_int64_t ifInOctets;
     u_int32_t ifInUcastPkts;
     u_int32_t ifInMulticastPkts;
@@ -523,10 +523,10 @@ typedef struct {
 typedef  union _SFLLACP_portState {
     uint32_t all;
     struct {
-	uint8_t actorAdmin;
-	uint8_t actorOper;
-	uint8_t partnerAdmin;
-	uint8_t partnerOper;
+    uint8_t actorAdmin;
+    uint8_t actorOper;
+    uint8_t partnerAdmin;
+    uint8_t partnerOper;
     } v;
 } SFLLACP_portState;
 
@@ -617,7 +617,7 @@ typedef struct _SFLCounters_sample {
     /* u_int32_t tag;    */       /* SFL_sample_tag -- enterprise = 0 : format = 2 */
     /* u_int32_t length; */
     u_int32_t sequence_number;    /* Incremented with each counters sample
-				     generated by this source_id */
+                     generated by this source_id */
     u_int32_t source_id;          /* fsSourceId */
     u_int32_t num_elements;
     SFLCounters_sample_element *elements;
@@ -628,7 +628,7 @@ typedef struct _SFLCounters_sample_expanded {
     /* u_int32_t tag;    */       /* SFL_sample_tag -- enterprise = 0 : format = 2 */
     /* u_int32_t length; */
     u_int32_t sequence_number;    /* Incremented with each counters sample
-				     generated by this source_id */
+                     generated by this source_id */
     u_int32_t ds_class;           /* EXPANDED */
     u_int32_t ds_index;           /* EXPANDED */
     u_int32_t num_elements;
@@ -649,13 +649,13 @@ typedef struct _SFLSample_datagram_hdr {
     u_int32_t datagram_version;      /* (enum SFLDatagram_version) = VERSION5 = 5 */
     SFLAddress agent_address;        /* IP address of sampling agent */
     u_int32_t sub_agent_id;          /* Used to distinguishing between datagram
-					streams from separate agent sub entities
-					within an device. */
+                    streams from separate agent sub entities
+                    within an device. */
     u_int32_t sequence_number;       /* Incremented with each sample datagram
-					generated */
+                    generated */
     u_int32_t uptime;                /* Current time (in milliseconds since device
-					last booted). Should be set as close to
-					datagram transmission time as possible.*/
+                    last booted). Should be set as close to
+                    datagram transmission time as possible.*/
     u_int32_t num_records;           /* Number of tag-len-val flow/counter records to follow */
 } SFLSample_datagram_hdr;
 

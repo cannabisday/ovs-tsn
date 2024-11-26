@@ -181,7 +181,7 @@ UINT32 Rand()
 static __inline
 PVOID OvsGetMdlWithLowPriority(PMDL curMdl)
 {
-return	MmGetSystemAddressForMdlSafe(curMdl,
+return    MmGetSystemAddressForMdlSafe(curMdl,
                                      LowPagePriority | MdlMappingNoExecute);
 }
 

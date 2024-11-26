@@ -8,13 +8,13 @@
 #define OVS_STT
 
 struct stthdr {
-	__u8		version;
-	__u8		flags;
-	__u8		l4_offset;
-	__u8		reserved;
-	__be16		mss;
-	__be16		vlan_tci;
-	__be64		key;
+    __u8        version;
+    __u8        flags;
+    __u8        l4_offset;
+    __u8        reserved;
+    __be16        mss;
+    __be16        vlan_tci;
+    __be64        key;
 };
 
 /* Padding after the end of the tunnel headers to provide alignment
@@ -23,16 +23,16 @@ struct stthdr {
 #define STT_ETH_PAD 2
 
 #define STT_BASE_HLEN   (sizeof(struct stthdr) + STT_ETH_PAD)
-#define STT_HEADER_LEN	(sizeof(struct tcphdr) + STT_BASE_HLEN)
+#define STT_HEADER_LEN    (sizeof(struct tcphdr) + STT_BASE_HLEN)
 
 static inline struct stthdr *stt_hdr(const struct sk_buff *skb)
 {
-	return (struct stthdr *)(skb_transport_header(skb) +
-				 sizeof(struct tcphdr));
+    return (struct stthdr *)(skb_transport_header(skb) +
+                 sizeof(struct tcphdr));
 }
 
 struct net_device *ovs_stt_dev_create_fb(struct net *net, const char *name,
-				      u8 name_assign_type, u16 dst_port);
+                      u8 name_assign_type, u16 dst_port);
 
 netdev_tx_t ovs_stt_xmit(struct sk_buff *skb);
 
@@ -42,21 +42,21 @@ void ovs_stt_cleanup_module(void);
 #else
 static inline int ovs_stt_init_module(void)
 {
-	return 0;
+    return 0;
 }
 
 static inline void ovs_stt_cleanup_module(void)
 {}
 
 static inline struct net_device *ovs_stt_dev_create_fb(struct net *net, const char *name,
-				      u8 name_assign_type, u16 dst_port)
+                      u8 name_assign_type, u16 dst_port)
 {
-	return ERR_PTR(-EOPNOTSUPP);
+    return ERR_PTR(-EOPNOTSUPP);
 }
 static inline netdev_tx_t ovs_stt_xmit(struct sk_buff *skb)
 {
-	BUG();
-	return NETDEV_TX_OK;
+    BUG();
+    return NETDEV_TX_OK;
 }
 #endif
 

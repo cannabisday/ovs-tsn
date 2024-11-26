@@ -34,178 +34,178 @@ static struct vport_ops ovs_vxlan_netdev_vport_ops;
 
 static int vxlan_get_options(const struct vport *vport, struct sk_buff *skb)
 {
-	struct vxlan_dev *vxlan = netdev_priv(vport->dev);
-	__be16 dst_port = vxlan->cfg.dst_port;
+    struct vxlan_dev *vxlan = netdev_priv(vport->dev);
+    __be16 dst_port = vxlan->cfg.dst_port;
 
-	if (nla_put_u16(skb, OVS_TUNNEL_ATTR_DST_PORT, ntohs(dst_port)))
-		return -EMSGSIZE;
-
-#ifdef HAVE_VXLAN_DEV_CFG
-	if (vxlan->cfg.flags & VXLAN_F_GBP) {
-#else
-	if (vxlan->flags & VXLAN_F_GBP) {
-#endif
-		struct nlattr *exts;
-
-		exts = nla_nest_start_noflag(skb, OVS_TUNNEL_ATTR_EXTENSION);
-		if (!exts)
-			return -EMSGSIZE;
+    if (nla_put_u16(skb, OVS_TUNNEL_ATTR_DST_PORT, ntohs(dst_port)))
+        return -EMSGSIZE;
 
 #ifdef HAVE_VXLAN_DEV_CFG
-		if (vxlan->cfg.flags & VXLAN_F_GBP &&
+    if (vxlan->cfg.flags & VXLAN_F_GBP) {
 #else
-		if (vxlan->flags & VXLAN_F_GBP &&
+    if (vxlan->flags & VXLAN_F_GBP) {
 #endif
-		    nla_put_flag(skb, OVS_VXLAN_EXT_GBP))
-			return -EMSGSIZE;
+        struct nlattr *exts;
 
-		nla_nest_end(skb, exts);
-#ifdef HAVE_VXLAN_DEV_CFG
-	} else if (vxlan->cfg.flags & VXLAN_F_GPE) {
-#else
-	} else if (vxlan->flags & VXLAN_F_GPE) {
-#endif
-		struct nlattr *exts;
-
-		exts = nla_nest_start(skb, OVS_TUNNEL_ATTR_EXTENSION);
-		if (!exts)
-			return -EMSGSIZE;
+        exts = nla_nest_start_noflag(skb, OVS_TUNNEL_ATTR_EXTENSION);
+        if (!exts)
+            return -EMSGSIZE;
 
 #ifdef HAVE_VXLAN_DEV_CFG
-		if (vxlan->cfg.flags & VXLAN_F_GPE &&
+        if (vxlan->cfg.flags & VXLAN_F_GBP &&
 #else
-		if (vxlan->flags & VXLAN_F_GPE &&
+        if (vxlan->flags & VXLAN_F_GBP &&
 #endif
-		    nla_put_flag(skb, OVS_VXLAN_EXT_GPE))
-			return -EMSGSIZE;
+            nla_put_flag(skb, OVS_VXLAN_EXT_GBP))
+            return -EMSGSIZE;
 
-		nla_nest_end(skb, exts);
-	}
+        nla_nest_end(skb, exts);
+#ifdef HAVE_VXLAN_DEV_CFG
+    } else if (vxlan->cfg.flags & VXLAN_F_GPE) {
+#else
+    } else if (vxlan->flags & VXLAN_F_GPE) {
+#endif
+        struct nlattr *exts;
 
-	return 0;
+        exts = nla_nest_start(skb, OVS_TUNNEL_ATTR_EXTENSION);
+        if (!exts)
+            return -EMSGSIZE;
+
+#ifdef HAVE_VXLAN_DEV_CFG
+        if (vxlan->cfg.flags & VXLAN_F_GPE &&
+#else
+        if (vxlan->flags & VXLAN_F_GPE &&
+#endif
+            nla_put_flag(skb, OVS_VXLAN_EXT_GPE))
+            return -EMSGSIZE;
+
+        nla_nest_end(skb, exts);
+    }
+
+    return 0;
 }
 
 static const struct nla_policy exts_policy[OVS_VXLAN_EXT_MAX + 1] = {
-	[OVS_VXLAN_EXT_GBP]	= { .type = NLA_FLAG, },
-	[OVS_VXLAN_EXT_GPE]	= { .type = NLA_FLAG, },
+    [OVS_VXLAN_EXT_GBP]    = { .type = NLA_FLAG, },
+    [OVS_VXLAN_EXT_GPE]    = { .type = NLA_FLAG, },
 };
 
 static int vxlan_configure_exts(struct vport *vport, struct nlattr *attr,
-				struct vxlan_config *conf)
+                struct vxlan_config *conf)
 {
-	struct nlattr *exts[OVS_VXLAN_EXT_MAX + 1];
-	int err;
+    struct nlattr *exts[OVS_VXLAN_EXT_MAX + 1];
+    int err;
 
-	if (nla_len(attr) < sizeof(struct nlattr))
-		return -EINVAL;
+    if (nla_len(attr) < sizeof(struct nlattr))
+        return -EINVAL;
 
-	err = nla_parse_nested(exts, OVS_VXLAN_EXT_MAX, attr, exts_policy,
-			       NULL);
-	if (err < 0)
-		return err;
+    err = nla_parse_nested(exts, OVS_VXLAN_EXT_MAX, attr, exts_policy,
+                   NULL);
+    if (err < 0)
+        return err;
 
-	if (exts[OVS_VXLAN_EXT_GBP])
-		conf->flags |= VXLAN_F_GBP;
-	else if (exts[OVS_VXLAN_EXT_GPE])
-		conf->flags |= VXLAN_F_GPE;
+    if (exts[OVS_VXLAN_EXT_GBP])
+        conf->flags |= VXLAN_F_GBP;
+    else if (exts[OVS_VXLAN_EXT_GPE])
+        conf->flags |= VXLAN_F_GPE;
 
-	return 0;
+    return 0;
 }
 
 static struct vport *vxlan_tnl_create(const struct vport_parms *parms)
 {
-	struct net *net = ovs_dp_get_net(parms->dp);
-	struct nlattr *options = parms->options;
-	struct net_device *dev;
-	struct vport *vport;
-	struct nlattr *a;
-	int err;
-	struct vxlan_config conf = {
-		.no_share = true,
-		.flags = VXLAN_F_COLLECT_METADATA | VXLAN_F_UDP_ZERO_CSUM6_RX,
-		/* Don't restrict the packets that can be sent by MTU */
-		.mtu = IP_MAX_MTU,
-	};
+    struct net *net = ovs_dp_get_net(parms->dp);
+    struct nlattr *options = parms->options;
+    struct net_device *dev;
+    struct vport *vport;
+    struct nlattr *a;
+    int err;
+    struct vxlan_config conf = {
+        .no_share = true,
+        .flags = VXLAN_F_COLLECT_METADATA | VXLAN_F_UDP_ZERO_CSUM6_RX,
+        /* Don't restrict the packets that can be sent by MTU */
+        .mtu = IP_MAX_MTU,
+    };
 
-	if (!options) {
-		err = -EINVAL;
-		goto error;
-	}
+    if (!options) {
+        err = -EINVAL;
+        goto error;
+    }
 
-	a = nla_find_nested(options, OVS_TUNNEL_ATTR_DST_PORT);
-	if (a && nla_len(a) == sizeof(u16)) {
-		conf.dst_port = htons(nla_get_u16(a));
-	} else {
-		/* Require destination port from userspace. */
-		err = -EINVAL;
-		goto error;
-	}
+    a = nla_find_nested(options, OVS_TUNNEL_ATTR_DST_PORT);
+    if (a && nla_len(a) == sizeof(u16)) {
+        conf.dst_port = htons(nla_get_u16(a));
+    } else {
+        /* Require destination port from userspace. */
+        err = -EINVAL;
+        goto error;
+    }
 
-	vport = ovs_vport_alloc(0, &ovs_vxlan_netdev_vport_ops, parms);
-	if (IS_ERR(vport))
-		return vport;
+    vport = ovs_vport_alloc(0, &ovs_vxlan_netdev_vport_ops, parms);
+    if (IS_ERR(vport))
+        return vport;
 
-	a = nla_find_nested(options, OVS_TUNNEL_ATTR_EXTENSION);
-	if (a) {
-		err = vxlan_configure_exts(vport, a, &conf);
-		if (err) {
-			ovs_vport_free(vport);
-			goto error;
-		}
-	}
+    a = nla_find_nested(options, OVS_TUNNEL_ATTR_EXTENSION);
+    if (a) {
+        err = vxlan_configure_exts(vport, a, &conf);
+        if (err) {
+            ovs_vport_free(vport);
+            goto error;
+        }
+    }
 
-	rtnl_lock();
-	dev = vxlan_dev_create(net, parms->name, NET_NAME_USER, &conf);
-	if (IS_ERR(dev)) {
-		rtnl_unlock();
-		ovs_vport_free(vport);
-		return ERR_CAST(dev);
-	}
+    rtnl_lock();
+    dev = vxlan_dev_create(net, parms->name, NET_NAME_USER, &conf);
+    if (IS_ERR(dev)) {
+        rtnl_unlock();
+        ovs_vport_free(vport);
+        return ERR_CAST(dev);
+    }
 
-	err = dev_change_flags(dev, dev->flags | IFF_UP, NULL);
-	if (err < 0) {
-		rtnl_delete_link(dev);
-		rtnl_unlock();
-		ovs_vport_free(vport);
-		goto error;
-	}
+    err = dev_change_flags(dev, dev->flags | IFF_UP, NULL);
+    if (err < 0) {
+        rtnl_delete_link(dev);
+        rtnl_unlock();
+        ovs_vport_free(vport);
+        goto error;
+    }
 
-	rtnl_unlock();
-	return vport;
+    rtnl_unlock();
+    return vport;
 error:
-	return ERR_PTR(err);
+    return ERR_PTR(err);
 }
 
 static struct vport *vxlan_create(const struct vport_parms *parms)
 {
-	struct vport *vport;
+    struct vport *vport;
 
-	vport = vxlan_tnl_create(parms);
-	if (IS_ERR(vport))
-		return vport;
+    vport = vxlan_tnl_create(parms);
+    if (IS_ERR(vport))
+        return vport;
 
-	return ovs_netdev_link(vport, parms->name);
+    return ovs_netdev_link(vport, parms->name);
 }
 
 static struct vport_ops ovs_vxlan_netdev_vport_ops = {
-	.type			= OVS_VPORT_TYPE_VXLAN,
-	.create			= vxlan_create,
-	.destroy		= ovs_netdev_tunnel_destroy,
-	.get_options		= vxlan_get_options,
+    .type            = OVS_VPORT_TYPE_VXLAN,
+    .create            = vxlan_create,
+    .destroy        = ovs_netdev_tunnel_destroy,
+    .get_options        = vxlan_get_options,
 #ifndef USE_UPSTREAM_TUNNEL
-	.fill_metadata_dst	= vxlan_fill_metadata_dst,
+    .fill_metadata_dst    = vxlan_fill_metadata_dst,
 #endif
-	.send			= vxlan_xmit,
+    .send            = vxlan_xmit,
 };
 
 static int __init ovs_vxlan_tnl_init(void)
 {
-	return ovs_vport_ops_register(&ovs_vxlan_netdev_vport_ops);
+    return ovs_vport_ops_register(&ovs_vxlan_netdev_vport_ops);
 }
 
 static void __exit ovs_vxlan_tnl_exit(void)
 {
-	ovs_vport_ops_unregister(&ovs_vxlan_netdev_vport_ops);
+    ovs_vport_ops_unregister(&ovs_vxlan_netdev_vport_ops);
 }
 
 module_init(ovs_vxlan_tnl_init);

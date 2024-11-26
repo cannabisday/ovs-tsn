@@ -57,17 +57,17 @@
 #endif
 
 #ifndef NETIF_F_RXCSUM
-#define NETIF_F_RXCSUM	0
+#define NETIF_F_RXCSUM    0
 #endif
 
 #ifndef NETIF_F_GSO_ENCAP_ALL
-#define NETIF_F_GSO_ENCAP_ALL	(NETIF_F_GSO_GRE |			\
-				 NETIF_F_GSO_GRE_CSUM |			\
-				 NETIF_F_GSO_IPIP |			\
-				 NETIF_F_GSO_SIT |			\
-				 NETIF_F_GSO_UDP_TUNNEL |		\
-				 NETIF_F_GSO_UDP_TUNNEL_CSUM |		\
-				 NETIF_F_GSO_MPLS)
+#define NETIF_F_GSO_ENCAP_ALL    (NETIF_F_GSO_GRE |            \
+                 NETIF_F_GSO_GRE_CSUM |            \
+                 NETIF_F_GSO_IPIP |            \
+                 NETIF_F_GSO_SIT |            \
+                 NETIF_F_GSO_UDP_TUNNEL |        \
+                 NETIF_F_GSO_UDP_TUNNEL_CSUM |        \
+                 NETIF_F_GSO_MPLS)
 #endif
 
 #ifndef HAVE_NETIF_F_GSO_GRE_CSUM

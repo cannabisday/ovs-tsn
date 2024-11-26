@@ -62,10 +62,10 @@ u32 ovs_vport_find_upcall_portid(const struct vport *, struct sk_buff *);
  * on this port that miss the flow table.
  */
 struct vport_portids {
-	struct reciprocal_value rn_ids;
-	struct rcu_head rcu;
-	u32 n_ids;
-	u32 ids[];
+    struct reciprocal_value rn_ids;
+    struct rcu_head rcu;
+    u32 n_ids;
+    u32 ids[];
 };
 
 /**
@@ -81,17 +81,17 @@ struct vport_portids {
  * @rcu: RCU callback head for deferred destruction.
  */
 struct vport {
-	struct net_device *dev;
-	struct datapath	*dp;
-	struct vport_portids __rcu *upcall_portids;
-	u16 port_no;
+    struct net_device *dev;
+    struct datapath    *dp;
+    struct vport_portids __rcu *upcall_portids;
+    u16 port_no;
 
-	struct hlist_node hash_node;
-	struct hlist_node dp_hash_node;
-	const struct vport_ops *ops;
+    struct hlist_node hash_node;
+    struct hlist_node dp_hash_node;
+    const struct vport_ops *ops;
 
-	struct list_head detach_list;
-	struct rcu_head rcu;
+    struct list_head detach_list;
+    struct rcu_head rcu;
 };
 
 /**
@@ -105,14 +105,14 @@ struct vport {
  * @port_no: New vport's port number.
  */
 struct vport_parms {
-	const char *name;
-	enum ovs_vport_type type;
-	struct nlattr *options;
+    const char *name;
+    enum ovs_vport_type type;
+    struct nlattr *options;
 
-	/* For ovs_vport_alloc(). */
-	struct datapath *dp;
-	u16 port_no;
-	struct nlattr *upcall_portids;
+    /* For ovs_vport_alloc(). */
+    struct datapath *dp;
+    u16 port_no;
+    struct nlattr *upcall_portids;
 };
 
 /**
@@ -132,31 +132,31 @@ struct vport_parms {
  * zero for dropped packets or negative for error.
  */
 struct vport_ops {
-	enum ovs_vport_type type;
+    enum ovs_vport_type type;
 
-	/* Called with ovs_mutex. */
-	struct vport *(*create)(const struct vport_parms *);
-	void (*destroy)(struct vport *);
+    /* Called with ovs_mutex. */
+    struct vport *(*create)(const struct vport_parms *);
+    void (*destroy)(struct vport *);
 
-	int (*set_options)(struct vport *, struct nlattr *);
-	int (*get_options)(const struct vport *, struct sk_buff *);
+    int (*set_options)(struct vport *, struct nlattr *);
+    int (*get_options)(const struct vport *, struct sk_buff *);
 
-	netdev_tx_t (*send)(struct sk_buff *skb);
+    netdev_tx_t (*send)(struct sk_buff *skb);
 #ifndef USE_UPSTREAM_TUNNEL
-	int  (*fill_metadata_dst)(struct net_device *dev, struct sk_buff *skb);
+    int  (*fill_metadata_dst)(struct net_device *dev, struct sk_buff *skb);
 #endif
-	struct module *owner;
-	struct list_head list;
+    struct module *owner;
+    struct list_head list;
 };
 
 struct vport *ovs_vport_alloc(int priv_size, const struct vport_ops *,
-			      const struct vport_parms *);
+                  const struct vport_parms *);
 void ovs_vport_free(struct vport *);
 
 #define VPORT_ALIGN 8
 
 /**
- *	vport_priv - access private data area of vport
+ *    vport_priv - access private data area of vport
  *
  * @vport: vport to access
  *
@@ -166,11 +166,11 @@ void ovs_vport_free(struct vport *);
  */
 static inline void *vport_priv(const struct vport *vport)
 {
-	return (u8 *)(uintptr_t)vport + ALIGN(sizeof(struct vport), VPORT_ALIGN);
+    return (u8 *)(uintptr_t)vport + ALIGN(sizeof(struct vport), VPORT_ALIGN);
 }
 
 /**
- *	vport_from_priv - lookup vport from private data pointer
+ *    vport_from_priv - lookup vport from private data pointer
  *
  * @priv: Start of private data area.
  *
@@ -181,23 +181,23 @@ static inline void *vport_priv(const struct vport *vport)
  */
 static inline struct vport *vport_from_priv(void *priv)
 {
-	return (struct vport *)((u8 *)priv - ALIGN(sizeof(struct vport), VPORT_ALIGN));
+    return (struct vport *)((u8 *)priv - ALIGN(sizeof(struct vport), VPORT_ALIGN));
 }
 
 int ovs_vport_receive(struct vport *, struct sk_buff *,
-		      const struct ip_tunnel_info *);
+              const struct ip_tunnel_info *);
 
 static inline const char *ovs_vport_name(struct vport *vport)
 {
-	return vport->dev->name;
+    return vport->dev->name;
 }
 
 int __ovs_vport_ops_register(struct vport_ops *ops);
-#define ovs_vport_ops_register(ops)		\
-	({					\
-		(ops)->owner = THIS_MODULE;	\
-		__ovs_vport_ops_register(ops);	\
-	})
+#define ovs_vport_ops_register(ops)        \
+    ({                    \
+        (ops)->owner = THIS_MODULE;    \
+        __ovs_vport_ops_register(ops);    \
+    })
 
 void ovs_vport_ops_unregister(struct vport_ops *ops);
 void ovs_vport_send(struct vport *vport, struct sk_buff *skb, u8 mac_proto);

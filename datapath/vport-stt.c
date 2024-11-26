@@ -36,109 +36,109 @@ static struct vport_ops ovs_stt_vport_ops;
  * @dst_port: destination port.
  */
 struct stt_port {
-	u16 port_no;
+    u16 port_no;
 };
 
 static inline struct stt_port *stt_vport(const struct vport *vport)
 {
-	return vport_priv(vport);
+    return vport_priv(vport);
 }
 
 static int stt_get_options(const struct vport *vport,
-			      struct sk_buff *skb)
+                  struct sk_buff *skb)
 {
-	struct stt_port *stt_port = stt_vport(vport);
+    struct stt_port *stt_port = stt_vport(vport);
 
-	if (nla_put_u16(skb, OVS_TUNNEL_ATTR_DST_PORT, stt_port->port_no))
-		return -EMSGSIZE;
-	return 0;
+    if (nla_put_u16(skb, OVS_TUNNEL_ATTR_DST_PORT, stt_port->port_no))
+        return -EMSGSIZE;
+    return 0;
 }
 
 static struct vport *stt_tnl_create(const struct vport_parms *parms)
 {
-	struct net *net = ovs_dp_get_net(parms->dp);
-	struct nlattr *options = parms->options;
-	struct stt_port *stt_port;
-	struct net_device *dev;
-	struct vport *vport;
-	struct nlattr *a;
-	u16 dst_port;
-	int err;
+    struct net *net = ovs_dp_get_net(parms->dp);
+    struct nlattr *options = parms->options;
+    struct stt_port *stt_port;
+    struct net_device *dev;
+    struct vport *vport;
+    struct nlattr *a;
+    u16 dst_port;
+    int err;
 
-	if (!options) {
-		err = -EINVAL;
-		goto error;
-	}
+    if (!options) {
+        err = -EINVAL;
+        goto error;
+    }
 
-	a = nla_find_nested(options, OVS_TUNNEL_ATTR_DST_PORT);
-	if (a && nla_len(a) == sizeof(u16)) {
-		dst_port = nla_get_u16(a);
-	} else {
-		/* Require destination port from userspace. */
-		err = -EINVAL;
-		goto error;
-	}
+    a = nla_find_nested(options, OVS_TUNNEL_ATTR_DST_PORT);
+    if (a && nla_len(a) == sizeof(u16)) {
+        dst_port = nla_get_u16(a);
+    } else {
+        /* Require destination port from userspace. */
+        err = -EINVAL;
+        goto error;
+    }
 
-	vport = ovs_vport_alloc(sizeof(struct stt_port),
-				&ovs_stt_vport_ops, parms);
-	if (IS_ERR(vport))
-		return vport;
+    vport = ovs_vport_alloc(sizeof(struct stt_port),
+                &ovs_stt_vport_ops, parms);
+    if (IS_ERR(vport))
+        return vport;
 
-	stt_port = stt_vport(vport);
-	stt_port->port_no = dst_port;
+    stt_port = stt_vport(vport);
+    stt_port->port_no = dst_port;
 
-	rtnl_lock();
-	dev = stt_dev_create_fb(net, parms->name, NET_NAME_USER, dst_port);
-	if (IS_ERR(dev)) {
-		rtnl_unlock();
-		ovs_vport_free(vport);
-		return ERR_CAST(dev);
-	}
+    rtnl_lock();
+    dev = stt_dev_create_fb(net, parms->name, NET_NAME_USER, dst_port);
+    if (IS_ERR(dev)) {
+        rtnl_unlock();
+        ovs_vport_free(vport);
+        return ERR_CAST(dev);
+    }
 
-	err = dev_change_flags(dev, dev->flags | IFF_UP, NULL);
-	if (err < 0) {
-		rtnl_delete_link(dev);
-		rtnl_unlock();
-		ovs_vport_free(vport);
-		goto error;
-	}
+    err = dev_change_flags(dev, dev->flags | IFF_UP, NULL);
+    if (err < 0) {
+        rtnl_delete_link(dev);
+        rtnl_unlock();
+        ovs_vport_free(vport);
+        goto error;
+    }
 
-	rtnl_unlock();
-	return vport;
+    rtnl_unlock();
+    return vport;
 error:
-	return ERR_PTR(err);
+    return ERR_PTR(err);
 }
 
 static struct vport *stt_create(const struct vport_parms *parms)
 {
-	struct vport *vport;
+    struct vport *vport;
 
-	vport = stt_tnl_create(parms);
-	if (IS_ERR(vport))
-		return vport;
+    vport = stt_tnl_create(parms);
+    if (IS_ERR(vport))
+        return vport;
 
-	return ovs_netdev_link(vport, parms->name);
+    return ovs_netdev_link(vport, parms->name);
 }
 
 static struct vport_ops ovs_stt_vport_ops = {
-	.type		= OVS_VPORT_TYPE_STT,
-	.create		= stt_create,
-	.destroy	= ovs_netdev_tunnel_destroy,
-	.get_options	= stt_get_options,
+    .type        = OVS_VPORT_TYPE_STT,
+    .create        = stt_create,
+    .destroy    = ovs_netdev_tunnel_destroy,
+    .get_options    = stt_get_options,
 #ifndef USE_UPSTREAM_TUNNEL
-	.fill_metadata_dst = stt_fill_metadata_dst,
+    .fill_metadata_dst = stt_fill_metadata_dst,
 #endif
-	.send		= ovs_stt_xmit,
+    .send        = ovs_stt_xmit,
 };
 
 static int __init ovs_stt_tnl_init(void)
 {
-	return ovs_vport_ops_register(&ovs_stt_vport_ops);
+    return ovs_vport_ops_register(&ovs_stt_vport_ops);
 }
 
 static void __exit ovs_stt_tnl_exit(void)
 {
-	ovs_vport_ops_unregister(&ovs_stt_vport_ops);
+    ovs_vport_ops_unregister(&ovs_stt_vport_ops);
 }
 
 module_init(ovs_stt_tnl_init);

@@ -11,7 +11,7 @@
 
 static inline int rpl_geneve_init_module(void)
 {
-	return 0;
+    return 0;
 }
 static inline void rpl_geneve_cleanup_module(void)
 {}
@@ -21,8 +21,8 @@ static inline void rpl_geneve_cleanup_module(void)
 #ifdef CONFIG_INET
 #ifndef HAVE_NAME_ASSIGN_TYPE
 static inline struct net_device *rpl_geneve_dev_create_fb(
-	struct net *net, const char *name, u8 name_assign_type, u16 dst_port) {
-	return geneve_dev_create_fb(net, name, dst_port);
+    struct net *net, const char *name, u8 name_assign_type, u16 dst_port) {
+    return geneve_dev_create_fb(net, name, dst_port);
 }
 #define geneve_dev_create_fb rpl_geneve_dev_create_fb
 #endif
@@ -47,48 +47,48 @@ static inline struct net_device *rpl_geneve_dev_create_fb(
  */
 
 struct geneve_opt {
-	__be16	opt_class;
-	u8	type;
+    __be16    opt_class;
+    u8    type;
 #ifdef __LITTLE_ENDIAN_BITFIELD
-	u8	length:5;
-	u8	r3:1;
-	u8	r2:1;
-	u8	r1:1;
+    u8    length:5;
+    u8    r3:1;
+    u8    r2:1;
+    u8    r1:1;
 #else
-	u8	r1:1;
-	u8	r2:1;
-	u8	r3:1;
-	u8	length:5;
+    u8    r1:1;
+    u8    r2:1;
+    u8    r3:1;
+    u8    length:5;
 #endif
-	u8	opt_data[];
+    u8    opt_data[];
 };
 
 #define GENEVE_CRIT_OPT_TYPE (1 << 7)
 
 struct genevehdr {
 #ifdef __LITTLE_ENDIAN_BITFIELD
-	u8 opt_len:6;
-	u8 ver:2;
-	u8 rsvd1:6;
-	u8 critical:1;
-	u8 oam:1;
+    u8 opt_len:6;
+    u8 ver:2;
+    u8 rsvd1:6;
+    u8 critical:1;
+    u8 oam:1;
 #else
-	u8 ver:2;
-	u8 opt_len:6;
-	u8 oam:1;
-	u8 critical:1;
-	u8 rsvd1:6;
+    u8 ver:2;
+    u8 opt_len:6;
+    u8 oam:1;
+    u8 critical:1;
+    u8 rsvd1:6;
 #endif
-	__be16 proto_type;
-	u8 vni[3];
-	u8 rsvd2;
-	struct geneve_opt options[];
+    __be16 proto_type;
+    u8 vni[3];
+    u8 rsvd2;
+    struct geneve_opt options[];
 };
 
 #ifdef CONFIG_INET
 #define geneve_dev_create_fb rpl_geneve_dev_create_fb
 struct net_device *rpl_geneve_dev_create_fb(struct net *net, const char *name,
-					u8 name_assign_type, u16 dst_port);
+                    u8 name_assign_type, u16 dst_port);
 #endif /*ifdef CONFIG_INET */
 
 int rpl_geneve_init_module(void);

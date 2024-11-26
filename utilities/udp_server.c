@@ -1,3 +1,6 @@
+#include <config.h>
+#include <string.h>
+
 #include "udp_server.h" // 필요한 경우 헤더 파일 추가
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,6 +11,7 @@
 #include <errno.h>  // 에러 코드 출력을 위한 헤더 추가
 
 #define BUFFER_SIZE 4096
+
 
 // UDP 서버 스레드 함수
 void *udp_server_thread(void *arg) {

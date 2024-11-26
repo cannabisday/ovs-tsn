@@ -533,6 +533,6 @@ enum ctattr_timeout_gre {
 };
 #define CTA_TIMEOUT_GRE_MAX (__CTA_TIMEOUT_GRE_MAX - 1)
 
-#define CTNL_TIMEOUT_NAME_MAX	32
+#define CTNL_TIMEOUT_NAME_MAX    32
 
 #endif /* __OVS_DP_INTERFACE_CT_EXT_H_ */

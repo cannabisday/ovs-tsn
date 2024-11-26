@@ -17,14 +17,14 @@
  * |                Label                  | TC  |S|       TTL     |
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  *
- *	Label:  Label Value, 20 bits
- *	TC:     Traffic Class field, 3 bits
- *	S:      Bottom of Stack, 1 bit
- *	TTL:    Time to Live, 8 bits
+ *    Label:  Label Value, 20 bits
+ *    TC:     Traffic Class field, 3 bits
+ *    S:      Bottom of Stack, 1 bit
+ *    TTL:    Time to Live, 8 bits
  */
 
 struct mpls_label {
-	__be32 entry;
+    __be32 entry;
 };
 
 #define MPLS_LS_LABEL_MASK      0xFFFFF000

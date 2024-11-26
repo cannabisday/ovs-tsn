@@ -16,13 +16,13 @@
 #endif
 
 #ifndef rcu_access_pointer
-#define rcu_access_pointer(p)	rcu_dereference(p)
+#define rcu_access_pointer(p)    rcu_dereference(p)
 #endif
 
 #ifndef HAVE_RCU_READ_LOCK_HELD
 static inline int rcu_read_lock_held(void)
 {
-	return 1;
+    return 1;
 }
 #endif
 

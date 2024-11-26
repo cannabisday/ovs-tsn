@@ -73,16 +73,16 @@ static void reset(SFLReceiver *receiver) {
 
 static void initSocket(SFLReceiver *receiver) {
     if(receiver->sFlowRcvrAddress.type == SFLADDRESSTYPE_IP_V6) {
-	struct sockaddr_in6 *sa6 = &receiver->receiver6;
-	sa6->sin6_port = htons((u_int16_t)receiver->sFlowRcvrPort);
-	sa6->sin6_family = AF_INET6;
-	sa6->sin6_addr = receiver->sFlowRcvrAddress.address.ip_v6;
+    struct sockaddr_in6 *sa6 = &receiver->receiver6;
+    sa6->sin6_port = htons((u_int16_t)receiver->sFlowRcvrPort);
+    sa6->sin6_family = AF_INET6;
+    sa6->sin6_addr = receiver->sFlowRcvrAddress.address.ip_v6;
     }
     else {
-	struct sockaddr_in *sa4 = &receiver->receiver4;
-	sa4->sin_port = htons((u_int16_t)receiver->sFlowRcvrPort);
-	sa4->sin_family = AF_INET;
-	sa4->sin_addr = receiver->sFlowRcvrAddress.address.ip_v4;
+    struct sockaddr_in *sa4 = &receiver->receiver4;
+    sa4->sin_port = htons((u_int16_t)receiver->sFlowRcvrPort);
+    sa4->sin_family = AF_INET;
+    sa4->sin_addr = receiver->sFlowRcvrAddress.address.ip_v4;
     }
 }
 #endif
@@ -98,8 +98,8 @@ char * sfl_receiver_get_sFlowRcvrOwner(SFLReceiver *receiver) {
 void sfl_receiver_set_sFlowRcvrOwner(SFLReceiver *receiver, char *sFlowRcvrOwner) {
     receiver->sFlowRcvrOwner = sFlowRcvrOwner;
     if(sFlowRcvrOwner == NULL || sFlowRcvrOwner[0] == '\0') {
-	// reset condition! owner string was cleared
-	reset(receiver);
+    // reset condition! owner string was cleared
+    reset(receiver);
     }
 }
 time_t sfl_receiver_get_sFlowRcvrTimeout(SFLReceiver *receiver) {
@@ -147,8 +147,8 @@ void sfl_receiver_tick(SFLReceiver *receiver, time_t now)
     if(receiver->sampleCollector.numSamples > 0) sendSample(receiver);
     // check the timeout
     if(receiver->sFlowRcvrTimeout && (u_int32_t)receiver->sFlowRcvrTimeout != 0xFFFFFFFF) {
-	// count down one tick and reset if we reach 0
-	if(--receiver->sFlowRcvrTimeout == 0) reset(receiver);
+    // count down one tick and reset if we reach 0
+    if(--receiver->sFlowRcvrTimeout == 0) reset(receiver);
     }
 }
 
@@ -179,10 +179,10 @@ inline static void putNet64(SFLReceiver *receiver, u_int64_t val64)
     // first copy the bytes in
     memcpy((u_char *)firstQuadPtr, &val64, 8);
     if(htonl(1) != 1) {
-	// swap the bytes, and reverse the quads too
-	u_int32_t tmp = *receiver->sampleCollector.datap++;
-	*firstQuadPtr = htonl(*receiver->sampleCollector.datap);
-	*receiver->sampleCollector.datap++ = htonl(tmp);
+    // swap the bytes, and reverse the quads too
+    u_int32_t tmp = *receiver->sampleCollector.datap++;
+    *firstQuadPtr = htonl(*receiver->sampleCollector.datap);
+    *receiver->sampleCollector.datap++ = htonl(tmp);
     }
     else receiver->sampleCollector.datap += 2;
 }
@@ -213,13 +213,13 @@ inline static void putAddress(SFLReceiver *receiver, SFLAddress *addr)
 {
     // encode unspecified addresses as IPV4:0.0.0.0 - or should we flag this as an error?
     if(addr->type == 0) {
-	putNet32(receiver, SFLADDRESSTYPE_IP_V4);
-	put32(receiver, 0);
+    putNet32(receiver, SFLADDRESSTYPE_IP_V4);
+    put32(receiver, 0);
     }
     else {
-	putNet32(receiver, addr->type);
-	if(addr->type == SFLADDRESSTYPE_IP_V4) put32(receiver, addr->address.ip_v4.addr);
-	else put128(receiver, addr->address.ip_v6.addr);
+    putNet32(receiver, addr->type);
+    if(addr->type == SFLADDRESSTYPE_IP_V4) put32(receiver, addr->address.ip_v4.addr);
+    else put128(receiver, addr->address.ip_v6.addr);
     }
 }
 
@@ -261,12 +261,12 @@ inline static void putGateway(SFLReceiver *receiver, SFLExtended_gateway *gw)
     putNet32(receiver, gw->src_peer_as);
     putNet32(receiver, gw->dst_as_path_segments);
     {
-	u_int32_t seg = 0;
-	for(; seg < gw->dst_as_path_segments; seg++) {
-	    putNet32(receiver, gw->dst_as_path[seg].type);
-	    putNet32(receiver, gw->dst_as_path[seg].length);
-	    putNet32_run(receiver, gw->dst_as_path[seg].as.seq, gw->dst_as_path[seg].length);
-	}
+    u_int32_t seg = 0;
+    for(; seg < gw->dst_as_path_segments; seg++) {
+        putNet32(receiver, gw->dst_as_path[seg].type);
+        putNet32(receiver, gw->dst_as_path[seg].length);
+        putNet32_run(receiver, gw->dst_as_path[seg].as.seq, gw->dst_as_path[seg].length);
+    }
     }
     putNet32(receiver, gw->communities_length);
     putNet32_run(receiver, gw->communities, gw->communities_length);
@@ -278,8 +278,8 @@ inline static u_int32_t gatewayEncodingLength(SFLExtended_gateway *gw) {
     u_int32_t seg = 0;
     elemSiz += 16; // as, src_as, src_peer_as, dst_as_path_segments
     for(; seg < gw->dst_as_path_segments; seg++) {
-	elemSiz += 8; // type, length
-	elemSiz += 4 * gw->dst_as_path[seg].length; // set/seq bytes
+    elemSiz += 8; // type, length
+    elemSiz += 4 * gw->dst_as_path[seg].length; // set/seq bytes
     }
     elemSiz += 4; // communities_length
     elemSiz += 4 * gw->communities_length; // communities
@@ -297,9 +297,9 @@ inline static void putUser(SFLReceiver *receiver, SFLExtended_user *user)
 
 inline static u_int32_t userEncodingLength(SFLExtended_user *user) {
     return 4
-	+ stringEncodingLength(&user->src_user)
-	+ 4
-	+ stringEncodingLength(&user->dst_user);
+    + stringEncodingLength(&user->src_user)
+    + 4
+    + stringEncodingLength(&user->dst_user);
 }
 
 inline static void putUrl(SFLReceiver *receiver, SFLExtended_url *url)
@@ -311,8 +311,8 @@ inline static void putUrl(SFLReceiver *receiver, SFLExtended_url *url)
 
 inline static u_int32_t urlEncodingLength(SFLExtended_url *url) {
     return 4
-	+ stringEncodingLength(&url->url)
-	+ stringEncodingLength(&url->host);
+    + stringEncodingLength(&url->url)
+    + stringEncodingLength(&url->host);
 }
 
 inline static void putLabelStack(SFLReceiver *receiver, SFLLabelStack *labelStack)
@@ -334,8 +334,8 @@ inline static void putMpls(SFLReceiver *receiver, SFLExtended_mpls *mpls)
 
 inline static u_int32_t mplsEncodingLength(SFLExtended_mpls *mpls) {
     return addressEncodingLength(&mpls->nextHop)
-	+ labelStackEncodingLength(&mpls->in_stack)
-	+ labelStackEncodingLength(&mpls->out_stack);
+    + labelStackEncodingLength(&mpls->in_stack)
+    + labelStackEncodingLength(&mpls->out_stack);
 }
 
 inline static void putNat(SFLReceiver *receiver, SFLExtended_nat *nat)
@@ -346,7 +346,7 @@ inline static void putNat(SFLReceiver *receiver, SFLExtended_nat *nat)
 
 inline static u_int32_t natEncodingLength(SFLExtended_nat *nat) {
     return addressEncodingLength(&nat->src)
-	+ addressEncodingLength(&nat->dst);
+    + addressEncodingLength(&nat->dst);
 }
 
 inline static void putMplsTunnel(SFLReceiver *receiver, SFLExtended_mpls_tunnel *tunnel)
@@ -434,53 +434,53 @@ static int computeFlowSampleSize(SFLReceiver *receiver, SFL_FLOW_SAMPLE_TYPE *fs
     SFLFlow_sample_element *elem = fs->elements;
 #ifdef SFL_USE_32BIT_INDEX
     u_int siz = 52; /* tag, length, sequence_number, ds_class, ds_index, sampling_rate,
-		       sample_pool, drops, inputFormat, input, outputFormat, output, number of elements */
+               sample_pool, drops, inputFormat, input, outputFormat, output, number of elements */
 #else
     u_int siz = 40; /* tag, length, sequence_number, source_id, sampling_rate,
-		       sample_pool, drops, input, output, number of elements */
+               sample_pool, drops, input, output, number of elements */
 #endif
 
     fs->num_elements = 0; /* we're going to count them again even if this was set by the client */
     for(; elem != NULL; elem = elem->nxt) {
-	u_int elemSiz = 0;
-	fs->num_elements++;
-	siz += 8; /* tag, length */
-	switch(elem->tag) {
-	case SFLFLOW_HEADER:
-	    elemSiz = 16; /* header_protocol, frame_length, stripped, header_length */
-	    elemSiz += ((elem->flowType.header.header_length + 3) / 4) * 4; /* header, rounded up to nearest 4 bytes */
-	    break;
-	case SFLFLOW_ETHERNET: elemSiz = sizeof(SFLSampled_ethernet); break;
-	case SFLFLOW_IPV4: elemSiz = sizeof(SFLSampled_ipv4); break;
-	case SFLFLOW_IPV6: elemSiz = sizeof(SFLSampled_ipv6); break;
-	case SFLFLOW_EX_SWITCH: elemSiz = sizeof(SFLExtended_switch); break;
-	case SFLFLOW_EX_ROUTER: elemSiz = routerEncodingLength(&elem->flowType.router); break;
-	case SFLFLOW_EX_GATEWAY: elemSiz = gatewayEncodingLength(&elem->flowType.gateway); break;
-	case SFLFLOW_EX_USER: elemSiz = userEncodingLength(&elem->flowType.user); break;
-	case SFLFLOW_EX_URL: elemSiz = urlEncodingLength(&elem->flowType.url); break;
-	case SFLFLOW_EX_MPLS: elemSiz = mplsEncodingLength(&elem->flowType.mpls); break;
-	case SFLFLOW_EX_NAT: elemSiz = natEncodingLength(&elem->flowType.nat); break;
-	case SFLFLOW_EX_MPLS_TUNNEL: elemSiz = mplsTunnelEncodingLength(&elem->flowType.mpls_tunnel); break;
-	case SFLFLOW_EX_MPLS_VC: elemSiz = mplsVcEncodingLength(&elem->flowType.mpls_vc); break;
-	case SFLFLOW_EX_MPLS_FTN: elemSiz = mplsFtnEncodingLength(&elem->flowType.mpls_ftn); break;
-	case SFLFLOW_EX_MPLS_LDP_FEC: elemSiz = mplsLdpFecEncodingLength(&elem->flowType.mpls_ldp_fec); break;
-	case SFLFLOW_EX_VLAN_TUNNEL: elemSiz = vlanTunnelEncodingLength(&elem->flowType.vlan_tunnel); break;
-	case SFLFLOW_EX_IPV4_TUNNEL_EGRESS:
-	case SFLFLOW_EX_IPV4_TUNNEL_INGRESS:
-	    elemSiz = sizeof(SFLSampled_ipv4);
-	    break;
-	case SFLFLOW_EX_VNI_EGRESS:
-	case SFLFLOW_EX_VNI_INGRESS:
-	    elemSiz = sizeof(SFLExtended_vni);
-	    break;
-	default:
-	    sflError(receiver, "unexpected packet_data_tag");
-	    return -1;
-	    break;
-	}
-	// cache the element size, and accumulate it into the overall FlowSample size
-	elem->length = elemSiz;
-	siz += elemSiz;
+    u_int elemSiz = 0;
+    fs->num_elements++;
+    siz += 8; /* tag, length */
+    switch(elem->tag) {
+    case SFLFLOW_HEADER:
+        elemSiz = 16; /* header_protocol, frame_length, stripped, header_length */
+        elemSiz += ((elem->flowType.header.header_length + 3) / 4) * 4; /* header, rounded up to nearest 4 bytes */
+        break;
+    case SFLFLOW_ETHERNET: elemSiz = sizeof(SFLSampled_ethernet); break;
+    case SFLFLOW_IPV4: elemSiz = sizeof(SFLSampled_ipv4); break;
+    case SFLFLOW_IPV6: elemSiz = sizeof(SFLSampled_ipv6); break;
+    case SFLFLOW_EX_SWITCH: elemSiz = sizeof(SFLExtended_switch); break;
+    case SFLFLOW_EX_ROUTER: elemSiz = routerEncodingLength(&elem->flowType.router); break;
+    case SFLFLOW_EX_GATEWAY: elemSiz = gatewayEncodingLength(&elem->flowType.gateway); break;
+    case SFLFLOW_EX_USER: elemSiz = userEncodingLength(&elem->flowType.user); break;
+    case SFLFLOW_EX_URL: elemSiz = urlEncodingLength(&elem->flowType.url); break;
+    case SFLFLOW_EX_MPLS: elemSiz = mplsEncodingLength(&elem->flowType.mpls); break;
+    case SFLFLOW_EX_NAT: elemSiz = natEncodingLength(&elem->flowType.nat); break;
+    case SFLFLOW_EX_MPLS_TUNNEL: elemSiz = mplsTunnelEncodingLength(&elem->flowType.mpls_tunnel); break;
+    case SFLFLOW_EX_MPLS_VC: elemSiz = mplsVcEncodingLength(&elem->flowType.mpls_vc); break;
+    case SFLFLOW_EX_MPLS_FTN: elemSiz = mplsFtnEncodingLength(&elem->flowType.mpls_ftn); break;
+    case SFLFLOW_EX_MPLS_LDP_FEC: elemSiz = mplsLdpFecEncodingLength(&elem->flowType.mpls_ldp_fec); break;
+    case SFLFLOW_EX_VLAN_TUNNEL: elemSiz = vlanTunnelEncodingLength(&elem->flowType.vlan_tunnel); break;
+    case SFLFLOW_EX_IPV4_TUNNEL_EGRESS:
+    case SFLFLOW_EX_IPV4_TUNNEL_INGRESS:
+        elemSiz = sizeof(SFLSampled_ipv4);
+        break;
+    case SFLFLOW_EX_VNI_EGRESS:
+    case SFLFLOW_EX_VNI_INGRESS:
+        elemSiz = sizeof(SFLExtended_vni);
+        break;
+    default:
+        sflError(receiver, "unexpected packet_data_tag");
+        return -1;
+        break;
+    }
+    // cache the element size, and accumulate it into the overall FlowSample size
+    elem->length = elemSiz;
+    siz += elemSiz;
     }
 
     return siz;
@@ -501,14 +501,14 @@ int sfl_receiver_writeFlowSample(SFLReceiver *receiver, SFL_FLOW_SAMPLE_TYPE *fs
     // in fact - if it is even half as big then we should ditch it. Very
     // important to avoid overruning the packet buffer.
     if(packedSize > (int)(receiver->sFlowRcvrMaximumDatagramSize / 2)) {
-	sflError(receiver, "flow sample too big for datagram");
-	return -1;
+    sflError(receiver, "flow sample too big for datagram");
+    return -1;
     }
 
     // if the sample pkt is full enough so that this sample might put
     // it over the limit, then we should send it now before going on.
     if((receiver->sampleCollector.pktlen + packedSize) >= receiver->sFlowRcvrMaximumDatagramSize)
-	sendSample(receiver);
+    sendSample(receiver);
 
     receiver->sampleCollector.numSamples++;
 
@@ -545,80 +545,80 @@ int sfl_receiver_writeFlowSample(SFLReceiver *receiver, SFL_FLOW_SAMPLE_TYPE *fs
     putNet32(receiver, fs->num_elements);
 
     {
-	SFLFlow_sample_element *elem = fs->elements;
-	for(; elem != NULL; elem = elem->nxt) {
+    SFLFlow_sample_element *elem = fs->elements;
+    for(; elem != NULL; elem = elem->nxt) {
 
-	    putNet32(receiver, elem->tag);
-	    putNet32(receiver, elem->length); // length cached in computeFlowSampleSize()
+        putNet32(receiver, elem->tag);
+        putNet32(receiver, elem->length); // length cached in computeFlowSampleSize()
 
-	    switch(elem->tag) {
-	    case SFLFLOW_HEADER:
-		putNet32(receiver, elem->flowType.header.header_protocol);
-		putNet32(receiver, elem->flowType.header.frame_length);
-		putNet32(receiver, elem->flowType.header.stripped);
-		putNet32(receiver, elem->flowType.header.header_length);
-		/* the header */
-		memcpy(receiver->sampleCollector.datap, elem->flowType.header.header_bytes, elem->flowType.header.header_length);
-		/* round up to multiple of 4 to preserve alignment */
-		receiver->sampleCollector.datap += ((elem->flowType.header.header_length + 3) / 4);
-		break;
-	    case SFLFLOW_ETHERNET:
-		putNet32(receiver, elem->flowType.ethernet.eth_len);
-		putMACAddress(receiver, elem->flowType.ethernet.src_mac);
-		putMACAddress(receiver, elem->flowType.ethernet.dst_mac);
-		putNet32(receiver, elem->flowType.ethernet.eth_type);
-		break;
-	    case SFLFLOW_IPV4:
-	    case SFLFLOW_EX_IPV4_TUNNEL_EGRESS:
-	    case SFLFLOW_EX_IPV4_TUNNEL_INGRESS:
-		putNet32(receiver, elem->flowType.ipv4.length);
-		putNet32(receiver, elem->flowType.ipv4.protocol);
-		put32(receiver, elem->flowType.ipv4.src_ip.addr);
-		put32(receiver, elem->flowType.ipv4.dst_ip.addr);
-		putNet32(receiver, elem->flowType.ipv4.src_port);
-		putNet32(receiver, elem->flowType.ipv4.dst_port);
-		putNet32(receiver, elem->flowType.ipv4.tcp_flags);
-		putNet32(receiver, elem->flowType.ipv4.tos);
-		break;
-	    case SFLFLOW_IPV6:
-		putNet32(receiver, elem->flowType.ipv6.length);
-		putNet32(receiver, elem->flowType.ipv6.protocol);
-		put128(receiver, elem->flowType.ipv6.src_ip.addr);
-		put128(receiver, elem->flowType.ipv6.dst_ip.addr);
-		putNet32(receiver, elem->flowType.ipv6.src_port);
-		putNet32(receiver, elem->flowType.ipv6.dst_port);
-		putNet32(receiver, elem->flowType.ipv6.tcp_flags);
-		putNet32(receiver, elem->flowType.ipv6.priority);
-		break;
-	    case SFLFLOW_EX_SWITCH: putSwitch(receiver, &elem->flowType.sw); break;
-	    case SFLFLOW_EX_ROUTER: putRouter(receiver, &elem->flowType.router); break;
-	    case SFLFLOW_EX_GATEWAY: putGateway(receiver, &elem->flowType.gateway); break;
-	    case SFLFLOW_EX_USER: putUser(receiver, &elem->flowType.user); break;
-	    case SFLFLOW_EX_URL: putUrl(receiver, &elem->flowType.url); break;
-	    case SFLFLOW_EX_MPLS: putMpls(receiver, &elem->flowType.mpls); break;
-	    case SFLFLOW_EX_NAT: putNat(receiver, &elem->flowType.nat); break;
-	    case SFLFLOW_EX_MPLS_TUNNEL: putMplsTunnel(receiver, &elem->flowType.mpls_tunnel); break;
-	    case SFLFLOW_EX_MPLS_VC: putMplsVc(receiver, &elem->flowType.mpls_vc); break;
-	    case SFLFLOW_EX_MPLS_FTN: putMplsFtn(receiver, &elem->flowType.mpls_ftn); break;
-	    case SFLFLOW_EX_MPLS_LDP_FEC: putMplsLdpFec(receiver, &elem->flowType.mpls_ldp_fec); break;
-	    case SFLFLOW_EX_VLAN_TUNNEL: putVlanTunnel(receiver, &elem->flowType.vlan_tunnel); break;
-	    case SFLFLOW_EX_VNI_EGRESS:
-	    case SFLFLOW_EX_VNI_INGRESS:
-		putNet32(receiver, elem->flowType.tunnel_vni.vni);
-		break;
+        switch(elem->tag) {
+        case SFLFLOW_HEADER:
+        putNet32(receiver, elem->flowType.header.header_protocol);
+        putNet32(receiver, elem->flowType.header.frame_length);
+        putNet32(receiver, elem->flowType.header.stripped);
+        putNet32(receiver, elem->flowType.header.header_length);
+        /* the header */
+        memcpy(receiver->sampleCollector.datap, elem->flowType.header.header_bytes, elem->flowType.header.header_length);
+        /* round up to multiple of 4 to preserve alignment */
+        receiver->sampleCollector.datap += ((elem->flowType.header.header_length + 3) / 4);
+        break;
+        case SFLFLOW_ETHERNET:
+        putNet32(receiver, elem->flowType.ethernet.eth_len);
+        putMACAddress(receiver, elem->flowType.ethernet.src_mac);
+        putMACAddress(receiver, elem->flowType.ethernet.dst_mac);
+        putNet32(receiver, elem->flowType.ethernet.eth_type);
+        break;
+        case SFLFLOW_IPV4:
+        case SFLFLOW_EX_IPV4_TUNNEL_EGRESS:
+        case SFLFLOW_EX_IPV4_TUNNEL_INGRESS:
+        putNet32(receiver, elem->flowType.ipv4.length);
+        putNet32(receiver, elem->flowType.ipv4.protocol);
+        put32(receiver, elem->flowType.ipv4.src_ip.addr);
+        put32(receiver, elem->flowType.ipv4.dst_ip.addr);
+        putNet32(receiver, elem->flowType.ipv4.src_port);
+        putNet32(receiver, elem->flowType.ipv4.dst_port);
+        putNet32(receiver, elem->flowType.ipv4.tcp_flags);
+        putNet32(receiver, elem->flowType.ipv4.tos);
+        break;
+        case SFLFLOW_IPV6:
+        putNet32(receiver, elem->flowType.ipv6.length);
+        putNet32(receiver, elem->flowType.ipv6.protocol);
+        put128(receiver, elem->flowType.ipv6.src_ip.addr);
+        put128(receiver, elem->flowType.ipv6.dst_ip.addr);
+        putNet32(receiver, elem->flowType.ipv6.src_port);
+        putNet32(receiver, elem->flowType.ipv6.dst_port);
+        putNet32(receiver, elem->flowType.ipv6.tcp_flags);
+        putNet32(receiver, elem->flowType.ipv6.priority);
+        break;
+        case SFLFLOW_EX_SWITCH: putSwitch(receiver, &elem->flowType.sw); break;
+        case SFLFLOW_EX_ROUTER: putRouter(receiver, &elem->flowType.router); break;
+        case SFLFLOW_EX_GATEWAY: putGateway(receiver, &elem->flowType.gateway); break;
+        case SFLFLOW_EX_USER: putUser(receiver, &elem->flowType.user); break;
+        case SFLFLOW_EX_URL: putUrl(receiver, &elem->flowType.url); break;
+        case SFLFLOW_EX_MPLS: putMpls(receiver, &elem->flowType.mpls); break;
+        case SFLFLOW_EX_NAT: putNat(receiver, &elem->flowType.nat); break;
+        case SFLFLOW_EX_MPLS_TUNNEL: putMplsTunnel(receiver, &elem->flowType.mpls_tunnel); break;
+        case SFLFLOW_EX_MPLS_VC: putMplsVc(receiver, &elem->flowType.mpls_vc); break;
+        case SFLFLOW_EX_MPLS_FTN: putMplsFtn(receiver, &elem->flowType.mpls_ftn); break;
+        case SFLFLOW_EX_MPLS_LDP_FEC: putMplsLdpFec(receiver, &elem->flowType.mpls_ldp_fec); break;
+        case SFLFLOW_EX_VLAN_TUNNEL: putVlanTunnel(receiver, &elem->flowType.vlan_tunnel); break;
+        case SFLFLOW_EX_VNI_EGRESS:
+        case SFLFLOW_EX_VNI_INGRESS:
+        putNet32(receiver, elem->flowType.tunnel_vni.vni);
+        break;
 
-	    default:
-		sflError(receiver, "unexpected packet_data_tag");
-		return -1;
-		break;
-	    }
-	}
+        default:
+        sflError(receiver, "unexpected packet_data_tag");
+        return -1;
+        break;
+        }
+    }
     }
 
     // sanity check
     assert(((u_char *)receiver->sampleCollector.datap
-	    - (u_char *)receiver->sampleCollector.data
-	    - receiver->sampleCollector.pktlen)  == (u_int32_t)packedSize);
+        - (u_char *)receiver->sampleCollector.data
+        - receiver->sampleCollector.pktlen)  == (u_int32_t)packedSize);
 
     // update the pktlen
     receiver->sampleCollector.pktlen = (u_char *)receiver->sampleCollector.datap - (u_char *)receiver->sampleCollector.data;
@@ -641,28 +641,28 @@ static int computeCountersSampleSize(SFLReceiver *receiver, SFL_COUNTERS_SAMPLE_
 
     cs->num_elements = 0; /* we're going to count them again even if this was set by the client */
     for(; elem != NULL; elem = elem->nxt) {
-	u_int elemSiz = 0;
-	cs->num_elements++;
-	siz += 8; /* tag, length */
-	switch(elem->tag) {
-	case SFLCOUNTERS_GENERIC:  elemSiz = SFL_CTR_GENERIC_XDR_SIZE; break;
-	case SFLCOUNTERS_ETHERNET: elemSiz = SFL_CTR_ETHERNET_XDR_SIZE; break;
-	case SFLCOUNTERS_TOKENRING: elemSiz = sizeof(elem->counterBlock.tokenring); break;
-	case SFLCOUNTERS_VG: elemSiz = sizeof(elem->counterBlock.vg); break;
-	case SFLCOUNTERS_VLAN: elemSiz = sizeof(elem->counterBlock.vlan); break;
-	case SFLCOUNTERS_LACP: elemSiz = SFL_CTR_LACP_XDR_SIZE; break;
-	case SFLCOUNTERS_OPENFLOWPORT: elemSiz = SFL_CTR_OPENFLOWPORT_XDR_SIZE; break;
-	case SFLCOUNTERS_PORTNAME: elemSiz = stringEncodingLength(&elem->counterBlock.portName.portName); break;
-	case SFLCOUNTERS_APP_RESOURCES: elemSiz = SFL_CTR_APP_RESOURCES_XDR_SIZE; break;
-	case SFLCOUNTERS_OVSDP: elemSiz = SFL_CTR_OVSDP_XDR_SIZE; break;
-	default:
-	    sflError(receiver, "unexpected counters_tag");
-	    return -1;
-	    break;
-	}
-	// cache the element size, and accumulate it into the overall FlowSample size
-	elem->length = elemSiz;
-	siz += elemSiz;
+    u_int elemSiz = 0;
+    cs->num_elements++;
+    siz += 8; /* tag, length */
+    switch(elem->tag) {
+    case SFLCOUNTERS_GENERIC:  elemSiz = SFL_CTR_GENERIC_XDR_SIZE; break;
+    case SFLCOUNTERS_ETHERNET: elemSiz = SFL_CTR_ETHERNET_XDR_SIZE; break;
+    case SFLCOUNTERS_TOKENRING: elemSiz = sizeof(elem->counterBlock.tokenring); break;
+    case SFLCOUNTERS_VG: elemSiz = sizeof(elem->counterBlock.vg); break;
+    case SFLCOUNTERS_VLAN: elemSiz = sizeof(elem->counterBlock.vlan); break;
+    case SFLCOUNTERS_LACP: elemSiz = SFL_CTR_LACP_XDR_SIZE; break;
+    case SFLCOUNTERS_OPENFLOWPORT: elemSiz = SFL_CTR_OPENFLOWPORT_XDR_SIZE; break;
+    case SFLCOUNTERS_PORTNAME: elemSiz = stringEncodingLength(&elem->counterBlock.portName.portName); break;
+    case SFLCOUNTERS_APP_RESOURCES: elemSiz = SFL_CTR_APP_RESOURCES_XDR_SIZE; break;
+    case SFLCOUNTERS_OVSDP: elemSiz = SFL_CTR_OVSDP_XDR_SIZE; break;
+    default:
+        sflError(receiver, "unexpected counters_tag");
+        return -1;
+        break;
+    }
+    // cache the element size, and accumulate it into the overall FlowSample size
+    elem->length = elemSiz;
+    siz += elemSiz;
     }
     return siz;
 }
@@ -684,12 +684,12 @@ int sfl_receiver_writeCountersSample(SFLReceiver *receiver, SFL_COUNTERS_SAMPLE_
     // in fact - if it is even half as big then we should ditch it. Very
     // important to avoid overruning the packet buffer.
     if(packedSize > (int)(receiver->sFlowRcvrMaximumDatagramSize / 2)) {
-	sflError(receiver, "counters sample too big for datagram");
-	return -1;
+    sflError(receiver, "counters sample too big for datagram");
+    return -1;
     }
 
     if((receiver->sampleCollector.pktlen + packedSize) >= receiver->sFlowRcvrMaximumDatagramSize)
-	sendSample(receiver);
+    sendSample(receiver);
 
     receiver->sampleCollector.numSamples++;
 
@@ -712,100 +712,100 @@ int sfl_receiver_writeCountersSample(SFLReceiver *receiver, SFL_COUNTERS_SAMPLE_
     putNet32(receiver, cs->num_elements);
 
     {
-	SFLCounters_sample_element *elem = cs->elements;
-	for(; elem != NULL; elem = elem->nxt) {
+    SFLCounters_sample_element *elem = cs->elements;
+    for(; elem != NULL; elem = elem->nxt) {
 
-	    putNet32(receiver, elem->tag);
-	    putNet32(receiver, elem->length); // length cached in computeCountersSampleSize()
+        putNet32(receiver, elem->tag);
+        putNet32(receiver, elem->length); // length cached in computeCountersSampleSize()
 
-	    switch(elem->tag) {
-	    case SFLCOUNTERS_GENERIC:
-		putGenericCounters(receiver, &(elem->counterBlock.generic));
-		break;
-	    case SFLCOUNTERS_ETHERNET:
-		// all these counters are 32-bit
-		putNet32_run(receiver, &elem->counterBlock.ethernet, sizeof(elem->counterBlock.ethernet) / 4);
-		break;
-	    case SFLCOUNTERS_TOKENRING:
-		// all these counters are 32-bit
-		putNet32_run(receiver, &elem->counterBlock.tokenring, sizeof(elem->counterBlock.tokenring) / 4);
-		break;
-	    case SFLCOUNTERS_VG:
-		// mixed sizes
-		putNet32(receiver, elem->counterBlock.vg.dot12InHighPriorityFrames);
-		putNet64(receiver, elem->counterBlock.vg.dot12InHighPriorityOctets);
-		putNet32(receiver, elem->counterBlock.vg.dot12InNormPriorityFrames);
-		putNet64(receiver, elem->counterBlock.vg.dot12InNormPriorityOctets);
-		putNet32(receiver, elem->counterBlock.vg.dot12InIPMErrors);
-		putNet32(receiver, elem->counterBlock.vg.dot12InOversizeFrameErrors);
-		putNet32(receiver, elem->counterBlock.vg.dot12InDataErrors);
-		putNet32(receiver, elem->counterBlock.vg.dot12InNullAddressedFrames);
-		putNet32(receiver, elem->counterBlock.vg.dot12OutHighPriorityFrames);
-		putNet64(receiver, elem->counterBlock.vg.dot12OutHighPriorityOctets);
-		putNet32(receiver, elem->counterBlock.vg.dot12TransitionIntoTrainings);
-		putNet64(receiver, elem->counterBlock.vg.dot12HCInHighPriorityOctets);
-		putNet64(receiver, elem->counterBlock.vg.dot12HCInNormPriorityOctets);
-		putNet64(receiver, elem->counterBlock.vg.dot12HCOutHighPriorityOctets);
-		break;
-	    case SFLCOUNTERS_VLAN:
-		// mixed sizes
-		putNet32(receiver, elem->counterBlock.vlan.vlan_id);
-		putNet64(receiver, elem->counterBlock.vlan.octets);
-		putNet32(receiver, elem->counterBlock.vlan.ucastPkts);
-		putNet32(receiver, elem->counterBlock.vlan.multicastPkts);
-		putNet32(receiver, elem->counterBlock.vlan.broadcastPkts);
-		putNet32(receiver, elem->counterBlock.vlan.discards);
-		break;
-	    case SFLCOUNTERS_LACP:
-		putMACAddress(receiver, elem->counterBlock.lacp.actorSystemID);
-		putMACAddress(receiver, elem->counterBlock.lacp.partnerSystemID);
-		putNet32(receiver, elem->counterBlock.lacp.attachedAggID);
-		put32(receiver, elem->counterBlock.lacp.portState.all);
-		putNet32(receiver, elem->counterBlock.lacp.LACPDUsRx);
-		putNet32(receiver, elem->counterBlock.lacp.markerPDUsRx);
-		putNet32(receiver, elem->counterBlock.lacp.markerResponsePDUsRx);
-		putNet32(receiver, elem->counterBlock.lacp.unknownRx);
-		putNet32(receiver, elem->counterBlock.lacp.illegalRx);
-		putNet32(receiver, elem->counterBlock.lacp.LACPDUsTx);
-		putNet32(receiver, elem->counterBlock.lacp.markerPDUsTx);
-		putNet32(receiver, elem->counterBlock.lacp.markerResponsePDUsTx);
-		break;
-	    case SFLCOUNTERS_OPENFLOWPORT:
-		putNet64(receiver, elem->counterBlock.ofPort.datapath_id);
-		putNet32(receiver, elem->counterBlock.ofPort.port_no);
-		break;
-	    case SFLCOUNTERS_PORTNAME:
-		putString(receiver, &elem->counterBlock.portName.portName);
-		break;
-	    case SFLCOUNTERS_APP_RESOURCES:
-		putNet32(receiver, elem->counterBlock.appResources.user_time);
-		putNet32(receiver, elem->counterBlock.appResources.system_time);
-		putNet64(receiver, elem->counterBlock.appResources.mem_used);
-		putNet64(receiver, elem->counterBlock.appResources.mem_max);
-		putNet32(receiver, elem->counterBlock.appResources.fd_open);
-		putNet32(receiver, elem->counterBlock.appResources.fd_max);
-		putNet32(receiver, elem->counterBlock.appResources.conn_open);
-		putNet32(receiver, elem->counterBlock.appResources.conn_max);
-		break;
-	    case SFLCOUNTERS_OVSDP:
-		putNet32(receiver, elem->counterBlock.ovsdp.n_hit);
-		putNet32(receiver, elem->counterBlock.ovsdp.n_missed);
-		putNet32(receiver, elem->counterBlock.ovsdp.n_lost);
-		putNet32(receiver, elem->counterBlock.ovsdp.n_mask_hit);
-		putNet32(receiver, elem->counterBlock.ovsdp.n_flows);
-		putNet32(receiver, elem->counterBlock.ovsdp.n_masks);
-		break;
-	    default:
-		sflError(receiver, "unexpected counters_tag");
-		return -1;
-		break;
-	    }
-	}
+        switch(elem->tag) {
+        case SFLCOUNTERS_GENERIC:
+        putGenericCounters(receiver, &(elem->counterBlock.generic));
+        break;
+        case SFLCOUNTERS_ETHERNET:
+        // all these counters are 32-bit
+        putNet32_run(receiver, &elem->counterBlock.ethernet, sizeof(elem->counterBlock.ethernet) / 4);
+        break;
+        case SFLCOUNTERS_TOKENRING:
+        // all these counters are 32-bit
+        putNet32_run(receiver, &elem->counterBlock.tokenring, sizeof(elem->counterBlock.tokenring) / 4);
+        break;
+        case SFLCOUNTERS_VG:
+        // mixed sizes
+        putNet32(receiver, elem->counterBlock.vg.dot12InHighPriorityFrames);
+        putNet64(receiver, elem->counterBlock.vg.dot12InHighPriorityOctets);
+        putNet32(receiver, elem->counterBlock.vg.dot12InNormPriorityFrames);
+        putNet64(receiver, elem->counterBlock.vg.dot12InNormPriorityOctets);
+        putNet32(receiver, elem->counterBlock.vg.dot12InIPMErrors);
+        putNet32(receiver, elem->counterBlock.vg.dot12InOversizeFrameErrors);
+        putNet32(receiver, elem->counterBlock.vg.dot12InDataErrors);
+        putNet32(receiver, elem->counterBlock.vg.dot12InNullAddressedFrames);
+        putNet32(receiver, elem->counterBlock.vg.dot12OutHighPriorityFrames);
+        putNet64(receiver, elem->counterBlock.vg.dot12OutHighPriorityOctets);
+        putNet32(receiver, elem->counterBlock.vg.dot12TransitionIntoTrainings);
+        putNet64(receiver, elem->counterBlock.vg.dot12HCInHighPriorityOctets);
+        putNet64(receiver, elem->counterBlock.vg.dot12HCInNormPriorityOctets);
+        putNet64(receiver, elem->counterBlock.vg.dot12HCOutHighPriorityOctets);
+        break;
+        case SFLCOUNTERS_VLAN:
+        // mixed sizes
+        putNet32(receiver, elem->counterBlock.vlan.vlan_id);
+        putNet64(receiver, elem->counterBlock.vlan.octets);
+        putNet32(receiver, elem->counterBlock.vlan.ucastPkts);
+        putNet32(receiver, elem->counterBlock.vlan.multicastPkts);
+        putNet32(receiver, elem->counterBlock.vlan.broadcastPkts);
+        putNet32(receiver, elem->counterBlock.vlan.discards);
+        break;
+        case SFLCOUNTERS_LACP:
+        putMACAddress(receiver, elem->counterBlock.lacp.actorSystemID);
+        putMACAddress(receiver, elem->counterBlock.lacp.partnerSystemID);
+        putNet32(receiver, elem->counterBlock.lacp.attachedAggID);
+        put32(receiver, elem->counterBlock.lacp.portState.all);
+        putNet32(receiver, elem->counterBlock.lacp.LACPDUsRx);
+        putNet32(receiver, elem->counterBlock.lacp.markerPDUsRx);
+        putNet32(receiver, elem->counterBlock.lacp.markerResponsePDUsRx);
+        putNet32(receiver, elem->counterBlock.lacp.unknownRx);
+        putNet32(receiver, elem->counterBlock.lacp.illegalRx);
+        putNet32(receiver, elem->counterBlock.lacp.LACPDUsTx);
+        putNet32(receiver, elem->counterBlock.lacp.markerPDUsTx);
+        putNet32(receiver, elem->counterBlock.lacp.markerResponsePDUsTx);
+        break;
+        case SFLCOUNTERS_OPENFLOWPORT:
+        putNet64(receiver, elem->counterBlock.ofPort.datapath_id);
+        putNet32(receiver, elem->counterBlock.ofPort.port_no);
+        break;
+        case SFLCOUNTERS_PORTNAME:
+        putString(receiver, &elem->counterBlock.portName.portName);
+        break;
+        case SFLCOUNTERS_APP_RESOURCES:
+        putNet32(receiver, elem->counterBlock.appResources.user_time);
+        putNet32(receiver, elem->counterBlock.appResources.system_time);
+        putNet64(receiver, elem->counterBlock.appResources.mem_used);
+        putNet64(receiver, elem->counterBlock.appResources.mem_max);
+        putNet32(receiver, elem->counterBlock.appResources.fd_open);
+        putNet32(receiver, elem->counterBlock.appResources.fd_max);
+        putNet32(receiver, elem->counterBlock.appResources.conn_open);
+        putNet32(receiver, elem->counterBlock.appResources.conn_max);
+        break;
+        case SFLCOUNTERS_OVSDP:
+        putNet32(receiver, elem->counterBlock.ovsdp.n_hit);
+        putNet32(receiver, elem->counterBlock.ovsdp.n_missed);
+        putNet32(receiver, elem->counterBlock.ovsdp.n_lost);
+        putNet32(receiver, elem->counterBlock.ovsdp.n_mask_hit);
+        putNet32(receiver, elem->counterBlock.ovsdp.n_flows);
+        putNet32(receiver, elem->counterBlock.ovsdp.n_masks);
+        break;
+        default:
+        sflError(receiver, "unexpected counters_tag");
+        return -1;
+        break;
+        }
+    }
     }
     // sanity check
     assert(((u_char *)receiver->sampleCollector.datap
-	    - (u_char *)receiver->sampleCollector.data
-	    - receiver->sampleCollector.pktlen)  == (u_int32_t)packedSize);
+        - (u_char *)receiver->sampleCollector.data
+        - receiver->sampleCollector.pktlen)  == (u_int32_t)packedSize);
 
     // update the pktlen
     receiver->sampleCollector.pktlen = (u_char *)receiver->sampleCollector.datap - (u_char *)receiver->sampleCollector.data;
@@ -838,35 +838,35 @@ static void sendSample(SFLReceiver *receiver)
     receiver->sampleCollector.data[hdrIdx++] = htonl(receiver->sampleCollector.numSamples); /* num samples */
     /* send */
     if(receiver->agent->sendFn) (*receiver->agent->sendFn)(receiver->agent->magic,
-							   receiver->agent,
-							   receiver,
-							   (u_char *)receiver->sampleCollector.data,
-							   receiver->sampleCollector.pktlen);
+                               receiver->agent,
+                               receiver,
+                               (u_char *)receiver->sampleCollector.data,
+                               receiver->sampleCollector.pktlen);
     else {
 #ifdef SFLOW_DO_SOCKET
-	/* send it myself */
-	if (receiver->sFlowRcvrAddress.type == SFLADDRESSTYPE_IP_V6) {
-	    u_int32_t soclen = sizeof(struct sockaddr_in6);
-	    int result = sendto(receiver->agent->receiverSocket6,
-				receiver->sampleCollector.data,
-				receiver->sampleCollector.pktlen,
-				0,
-				(struct sockaddr *)&receiver->receiver6,
-				soclen);
-	    if(result == -1 && errno != EINTR) sfl_agent_sysError(receiver->agent, "receiver", "IPv6 socket sendto error");
-	    if(result == 0) sfl_agent_error(receiver->agent, "receiver", "IPv6 socket sendto returned 0");
-	}
-	else {
-	    u_int32_t soclen = sizeof(struct sockaddr_in);
-	    int result = sendto(receiver->agent->receiverSocket4,
-				receiver->sampleCollector.data,
-				receiver->sampleCollector.pktlen,
-				0,
-				(struct sockaddr *)&receiver->receiver4,
-				soclen);
-	    if(result == -1 && errno != EINTR) sfl_agent_sysError(receiver->agent, "receiver", "socket sendto error");
-	    if(result == 0) sfl_agent_error(receiver->agent, "receiver", "socket sendto returned 0");
-	}
+    /* send it myself */
+    if (receiver->sFlowRcvrAddress.type == SFLADDRESSTYPE_IP_V6) {
+        u_int32_t soclen = sizeof(struct sockaddr_in6);
+        int result = sendto(receiver->agent->receiverSocket6,
+                receiver->sampleCollector.data,
+                receiver->sampleCollector.pktlen,
+                0,
+                (struct sockaddr *)&receiver->receiver6,
+                soclen);
+        if(result == -1 && errno != EINTR) sfl_agent_sysError(receiver->agent, "receiver", "IPv6 socket sendto error");
+        if(result == 0) sfl_agent_error(receiver->agent, "receiver", "IPv6 socket sendto returned 0");
+    }
+    else {
+        u_int32_t soclen = sizeof(struct sockaddr_in);
+        int result = sendto(receiver->agent->receiverSocket4,
+                receiver->sampleCollector.data,
+                receiver->sampleCollector.pktlen,
+                0,
+                (struct sockaddr *)&receiver->receiver4,
+                soclen);
+        if(result == -1 && errno != EINTR) sfl_agent_sysError(receiver->agent, "receiver", "socket sendto error");
+        if(result == 0) sfl_agent_error(receiver->agent, "receiver", "socket sendto returned 0");
+    }
 #endif
     }
 
@@ -885,7 +885,7 @@ static void resetSampleCollector(SFLReceiver *receiver)
     receiver->sampleCollector.numSamples = 0;
     /* point the datap to just after the header */
     receiver->sampleCollector.datap = (receiver->agent->myIP.type == SFLADDRESSTYPE_IP_V6) ?
-	(receiver->sampleCollector.data + 10) :  (receiver->sampleCollector.data + 7);
+    (receiver->sampleCollector.data + 10) :  (receiver->sampleCollector.data + 7);
 
     receiver->sampleCollector.pktlen = (u_char *)receiver->sampleCollector.datap - (u_char *)receiver->sampleCollector.data;
 }

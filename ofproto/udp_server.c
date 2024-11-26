@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include "udp_server.h"
 #include <stdio.h>
 #include <stdlib.h>

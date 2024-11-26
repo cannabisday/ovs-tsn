@@ -76,11 +76,11 @@ typedef struct _SFLDataSource_instance {
 #define SFL_DS_INSTANCE(dsi) (dsi).ds_instance
 #define SFL_DS_CLASS(dsi) (dsi).ds_class
 #define SFL_DS_INDEX(dsi) (dsi).ds_index
-#define SFL_DS_SET(dsi,clss,indx,inst)		\
-    do {					\
-	(dsi).ds_class = (clss);		\
-	(dsi).ds_index = (indx);		\
-	(dsi).ds_instance = (inst);		\
+#define SFL_DS_SET(dsi,clss,indx,inst)        \
+    do {                    \
+    (dsi).ds_class = (clss);        \
+    (dsi).ds_index = (indx);        \
+    (dsi).ds_instance = (inst);        \
     } while(0)
 
 typedef struct _SFLSampleCollector {
@@ -139,8 +139,8 @@ typedef struct _SFLSampler {
 struct _SFLPoller;
 
 typedef void (*getCountersFn_t)(void *magic,                   /* callback to get counters */
-				struct _SFLPoller *sampler,    /* called with self */
-				SFL_COUNTERS_SAMPLE_TYPE *cs); /* struct to fill in */
+                struct _SFLPoller *sampler,    /* called with self */
+                SFL_COUNTERS_SAMPLE_TYPE *cs); /* struct to fill in */
 
 typedef struct _SFLPoller {
     /* for linked list */
@@ -161,22 +161,22 @@ typedef struct _SFLPoller {
 } SFLPoller;
 
 typedef void *(*allocFn_t)(void *magic,               /* callback to allocate space on heap */
-			   struct _SFLAgent *agent,   /* called with self */
-			   size_t bytes);             /* bytes requested */
+               struct _SFLAgent *agent,   /* called with self */
+               size_t bytes);             /* bytes requested */
 
 typedef int (*freeFn_t)(void *magic,                  /* callback to free space on heap */
-			struct _SFLAgent *agent,      /* called with self */
-			void *obj);                   /* obj to free */
+            struct _SFLAgent *agent,      /* called with self */
+            void *obj);                   /* obj to free */
 
 typedef void (*errorFn_t)(void *magic,                /* callback to log error message */
-			  struct _SFLAgent *agent,    /* called with self */
-			  char *msg);                 /* error message */
+              struct _SFLAgent *agent,    /* called with self */
+              char *msg);                 /* error message */
 
 typedef void (*sendFn_t)(void *magic,                 /* optional override fn to send packet */
-			 struct _SFLAgent *agent,
-			 SFLReceiver *receiver,
-			 u_char *pkt,
-			 u_int32_t pktLen);
+             struct _SFLAgent *agent,
+             SFLReceiver *receiver,
+             u_char *pkt,
+             u_int32_t pktLen);
 
 
 /* prime numbers are good for hash tables */
@@ -204,24 +204,24 @@ typedef struct _SFLAgent {
 
 /* call this at the start with a newly created agent */
 void sfl_agent_init(SFLAgent *agent,
-		    SFLAddress *myIP, /* IP address of this agent */
-		    u_int32_t subId,  /* agent_sub_id */
-		    time_t bootTime,  /* agent boot time */
-		    time_t now,       /* time now */
-		    void *magic,      /* ptr to pass back in logging and alloc fns */
-		    allocFn_t allocFn,
-		    freeFn_t freeFn,
-		    errorFn_t errorFn,
-		    sendFn_t sendFn);
+            SFLAddress *myIP, /* IP address of this agent */
+            u_int32_t subId,  /* agent_sub_id */
+            time_t bootTime,  /* agent boot time */
+            time_t now,       /* time now */
+            void *magic,      /* ptr to pass back in logging and alloc fns */
+            allocFn_t allocFn,
+            freeFn_t freeFn,
+            errorFn_t errorFn,
+            sendFn_t sendFn);
 
 /* call this to create samplers */
 SFLSampler *sfl_agent_addSampler(SFLAgent *agent, SFLDataSource_instance *pdsi);
 
 /* call this to create pollers */
 SFLPoller *sfl_agent_addPoller(SFLAgent *agent,
-			       SFLDataSource_instance *pdsi,
-			       void *magic, /* ptr to pass back in getCountersFn() */
-			       getCountersFn_t getCountersFn);
+                   SFLDataSource_instance *pdsi,
+                   void *magic, /* ptr to pass back in getCountersFn() */
+                   getCountersFn_t getCountersFn);
 
 /* call this to create receivers */
 SFLReceiver *sfl_agent_addReceiver(SFLAgent *agent);

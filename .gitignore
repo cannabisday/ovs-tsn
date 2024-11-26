@@ -78,3 +78,9 @@ testsuite.tmp.orig
 /Documentation/_build
 /.venv
 /cxx-check
+README.md
+buildnrun.sh
+include/port_speed_map.h
+ovs_up.txt
+run.sh
+test34.sh

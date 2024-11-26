@@ -14,24 +14,24 @@
  * (at your option) any later version.
  */
 
-#define TCA_VLAN_ACT_POP	1
-#define TCA_VLAN_ACT_PUSH	2
-#define TCA_VLAN_ACT_MODIFY	3
+#define TCA_VLAN_ACT_POP    1
+#define TCA_VLAN_ACT_PUSH    2
+#define TCA_VLAN_ACT_MODIFY    3
 
 struct tc_vlan {
-	tc_gen;
-	int v_action;
+    tc_gen;
+    int v_action;
 };
 
 enum {
-	TCA_VLAN_UNSPEC,
-	TCA_VLAN_TM,
-	TCA_VLAN_PARMS,
-	TCA_VLAN_PUSH_VLAN_ID,
-	TCA_VLAN_PUSH_VLAN_PROTOCOL,
-	TCA_VLAN_PAD,
-	TCA_VLAN_PUSH_VLAN_PRIORITY,
-	__TCA_VLAN_MAX,
+    TCA_VLAN_UNSPEC,
+    TCA_VLAN_TM,
+    TCA_VLAN_PARMS,
+    TCA_VLAN_PUSH_VLAN_ID,
+    TCA_VLAN_PUSH_VLAN_PROTOCOL,
+    TCA_VLAN_PAD,
+    TCA_VLAN_PUSH_VLAN_PRIORITY,
+    __TCA_VLAN_MAX,
 };
 #define TCA_VLAN_MAX (__TCA_VLAN_MAX - 1)
 

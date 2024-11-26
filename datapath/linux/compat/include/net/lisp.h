@@ -9,7 +9,7 @@
 #ifdef CONFIG_INET
 #define lisp_dev_create_fb rpl_lisp_dev_create_fb
 struct net_device *rpl_lisp_dev_create_fb(struct net *net, const char *name,
-					u8 name_assign_type, u16 dst_port);
+                    u8 name_assign_type, u16 dst_port);
 #endif /*ifdef CONFIG_INET */
 
 #define lisp_init_module rpl_lisp_init_module

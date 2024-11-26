@@ -11,19 +11,19 @@
 
 #ifdef CONFIG_NF_CONNTRACK_TIMEOUT
 int rpl_nf_ct_set_timeout(struct net *net, struct nf_conn *ct, u8 l3num, u8 l4num,
-			  const char *timeout_name);
+              const char *timeout_name);
 void rpl_nf_ct_destroy_timeout(struct nf_conn *ct);
 #else
 static inline int rpl_nf_ct_set_timeout(struct net *net, struct nf_conn *ct,
-					u8 l3num, u8 l4num,
-					const char *timeout_name)
+                    u8 l3num, u8 l4num,
+                    const char *timeout_name)
 {
-	return -EOPNOTSUPP;
+    return -EOPNOTSUPP;
 }
 
 static inline void rpl_nf_ct_destroy_timeout(struct nf_conn *ct)
 {
-	return;
+    return;
 }
 #endif /* CONFIG_NF_CONNTRACK_TIMEOUT */
 

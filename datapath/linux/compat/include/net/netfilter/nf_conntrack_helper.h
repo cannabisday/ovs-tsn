@@ -5,26 +5,26 @@
 
 #ifndef HAVE_NF_CONNTRACK_HELPER_PUT
 static inline void nf_conntrack_helper_put(struct nf_conntrack_helper *helper) {
-	module_put(helper->me);
+    module_put(helper->me);
 }
 #endif
 
 #ifndef HAVE_NF_CT_HELPER_EXT_ADD_TAKES_HELPER
 static inline struct nf_conn_help *
 rpl_nf_ct_helper_ext_add(struct nf_conn *ct,
-			 struct nf_conntrack_helper *helper, gfp_t gfp)
+             struct nf_conntrack_helper *helper, gfp_t gfp)
 {
-	return nf_ct_helper_ext_add(ct, gfp);
+    return nf_ct_helper_ext_add(ct, gfp);
 }
 #define nf_ct_helper_ext_add rpl_nf_ct_helper_ext_add
 #endif /* HAVE_NF_CT_HELPER_EXT_ADD_TAKES_HELPER */
 
 #ifndef HAVE_NF_NAT_HELPER_TRY_MODULE_GET
 static inline int rpl_nf_nat_helper_try_module_get(const char *name, u16 l3num,
-						   u8 protonum)
+                           u8 protonum)
 {
-	request_module("ip_nat_%s", name);
-	return 0;
+    request_module("ip_nat_%s", name);
+    return 0;
 }
 #define nf_nat_helper_try_module_get rpl_nf_nat_helper_try_module_get
 #endif /* HAVE_NF_NAT_HELPER_TRY_MODULE_GET */

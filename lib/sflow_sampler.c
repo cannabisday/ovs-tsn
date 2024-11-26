@@ -63,8 +63,8 @@ void sfl_sampler_set_sFlowFsReceiver(SFLSampler *sampler, u_int32_t sFlowFsRecei
     sampler->sFlowFsReceiver = sFlowFsReceiver;
     if(sFlowFsReceiver == 0) reset(sampler);
     else {
-	/* retrieve and cache a direct pointer to my receiver */
-	sampler->myReceiver = sfl_agent_getReceiver(sampler->agent, sampler->sFlowFsReceiver);
+    /* retrieve and cache a direct pointer to my receiver */
+    sampler->myReceiver = sfl_agent_getReceiver(sampler->agent, sampler->sFlowFsReceiver);
     }
 }
 u_int32_t sfl_sampler_get_sFlowFsPacketSamplingRate(SFLSampler *sampler) {
@@ -110,11 +110,11 @@ void sfl_sampler_resetFlowSeqNo(SFLSampler *sampler) { sampler->flowSampleSeqNo 
 void sfl_sampler_tick(SFLSampler *sampler, time_t now)
 {
     if(sampler->backoffThreshold && sampler->samplesThisTick > sampler->backoffThreshold) {
-	/* automatic backoff.  If using hardware sampling then this is where you have to
-	 * call out to change the sampling rate and make sure that any other registers/variables
-	 * that hold this value are updated.
-	 */
-	sampler->sFlowFsPacketSamplingRate *= 2;
+    /* automatic backoff.  If using hardware sampling then this is where you have to
+     * call out to change the sampling rate and make sure that any other registers/variables
+     * that hold this value are updated.
+     */
+    sampler->sFlowFsPacketSamplingRate *= 2;
     }
     sampler->samplesLastTick = sampler->samplesThisTick;
     sampler->samplesThisTick = 0;
@@ -171,18 +171,18 @@ inline static u_int32_t nextRandomSkip(u_int32_t mean)
 int sfl_sampler_takeSample(SFLSampler *sampler)
 {
     if(sampler->skip == 0) {
-	/* first time - seed the random number generator */
-	srandom(SFL_DS_INDEX(sampler->dsi));
-	sampler->skip = nextRandomSkip(sampler->sFlowFsPacketSamplingRate);
+    /* first time - seed the random number generator */
+    srandom(SFL_DS_INDEX(sampler->dsi));
+    sampler->skip = nextRandomSkip(sampler->sFlowFsPacketSamplingRate);
     }
 
     /* increment the samplePool */
     sampler->samplePool++;
 
     if(--sampler->skip == 0) {
-	/* reached zero. Set the next skip and return true. */
-	sampler->skip = nextRandomSkip(sampler->sFlowFsPacketSamplingRate);
-	return 1;
+    /* reached zero. Set the next skip and return true. */
+    sampler->skip = nextRandomSkip(sampler->sFlowFsPacketSamplingRate);
+    return 1;
     }
     return 0;
 }

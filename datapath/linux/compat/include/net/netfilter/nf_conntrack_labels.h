@@ -13,23 +13,23 @@
 #if IS_ENABLED(CONFIG_NF_CONNTRACK_LABELS)
 
 /* XXX: This doesn't lock others out from doing the same configuration
- *	simultaneously. */
+ *    simultaneously. */
 static inline int rpl_nf_connlabels_get(struct net *net, unsigned int bits)
 {
 #ifndef HAVE_NF_CONNLABELS_GET
-	size_t words;
+    size_t words;
 
-	words = BIT_WORD(bits) + 1;
-	if (words > NF_CT_LABELS_MAX_SIZE / sizeof(long))
-		return -ERANGE;
+    words = BIT_WORD(bits) + 1;
+    if (words > NF_CT_LABELS_MAX_SIZE / sizeof(long))
+        return -ERANGE;
 
-	net->ct.labels_used++;
-	if (words > net->ct.label_words)
-		net->ct.label_words = words;
+    net->ct.labels_used++;
+    if (words > net->ct.label_words)
+        net->ct.label_words = words;
 
-	return 0;
+    return 0;
 #else
-	return nf_connlabels_get(net, bits + 1);
+    return nf_connlabels_get(net, bits + 1);
 #endif /* HAVE_NF_CONNLABELS_GET */
 }
 #define nf_connlabels_get rpl_nf_connlabels_get
@@ -37,11 +37,11 @@ static inline int rpl_nf_connlabels_get(struct net *net, unsigned int bits)
 static inline void rpl_nf_connlabels_put(struct net *net)
 {
 #ifndef HAVE_NF_CONNLABELS_GET
-	net->ct.labels_used--;
-	if (net->ct.labels_used == 0)
-		net->ct.label_words = 0;
+    net->ct.labels_used--;
+    if (net->ct.labels_used == 0)
+        net->ct.label_words = 0;
 #else
-	nf_connlabels_put(net);
+    nf_connlabels_put(net);
 #endif /* HAVE_NF_CONNLABELS_GET */
 }
 #define nf_connlabels_put rpl_nf_connlabels_put
@@ -50,7 +50,7 @@ static inline void rpl_nf_connlabels_put(struct net *net)
 #define nf_connlabels_get rpl_nf_connlabels_get
 static inline int nf_connlabels_get(struct net *net, unsigned int bits)
 {
-	return -ERANGE;
+    return -ERANGE;
 }
 
 #define nf_connlabels_put rpl_nf_connlabels_put
@@ -67,39 +67,39 @@ static inline void nf_connlabels_put(struct net *net) { }
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,7,0)
 static int replace_u32(u32 *address, u32 mask, u32 new)
 {
-	u32 old, tmp;
+    u32 old, tmp;
 
-	do {
-		old = *address;
-		tmp = (old & mask) ^ new;
-		if (old == tmp)
-			return 0;
-	} while (cmpxchg(address, old, tmp) != old);
+    do {
+        old = *address;
+        tmp = (old & mask) ^ new;
+        if (old == tmp)
+            return 0;
+    } while (cmpxchg(address, old, tmp) != old);
 
-	return 1;
+    return 1;
 }
 
 static int rpl_nf_connlabels_replace(struct nf_conn *ct,
-				     const u32 *data,
-				     const u32 *mask, unsigned int words32)
+                     const u32 *data,
+                     const u32 *mask, unsigned int words32)
 {
-	struct nf_conn_labels *labels;
-	unsigned int i;
-	int changed = 0;
-	u32 *dst;
+    struct nf_conn_labels *labels;
+    unsigned int i;
+    int changed = 0;
+    u32 *dst;
 
-	labels = nf_ct_labels_find(ct);
-	if (!labels)
-		return -ENOSPC;
+    labels = nf_ct_labels_find(ct);
+    if (!labels)
+        return -ENOSPC;
 
-	dst = (u32 *) labels->bits;
-	for (i = 0; i < words32; i++)
-		changed |= replace_u32(&dst[i], mask ? ~mask[i] : 0, data[i]);
+    dst = (u32 *) labels->bits;
+    for (i = 0; i < words32; i++)
+        changed |= replace_u32(&dst[i], mask ? ~mask[i] : 0, data[i]);
 
-	if (changed)
-		nf_conntrack_event_cache(IPCT_LABEL, ct);
+    if (changed)
+        nf_conntrack_event_cache(IPCT_LABEL, ct);
 
-	return 0;
+    return 0;
 }
 #define nf_connlabels_replace rpl_nf_connlabels_replace
 #endif

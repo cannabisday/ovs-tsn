@@ -10,14 +10,14 @@
 
 static inline int rpl_ipgre_init(void)
 {
-	return 0;
+    return 0;
 }
 static inline void rpl_ipgre_fini(void)
 {}
 
 static inline int rpl_ip6gre_init(void)
 {
-	return 0;
+    return 0;
 }
 
 static inline void rpl_ip6gre_fini(void)
@@ -25,7 +25,7 @@ static inline void rpl_ip6gre_fini(void)
 
 static inline int rpl_ip6_tunnel_init(void)
 {
-	return 0;
+    return 0;
 }
 
 static inline void rpl_ip6_tunnel_cleanup(void)
@@ -34,7 +34,7 @@ static inline void rpl_ip6_tunnel_cleanup(void)
 
 static inline int rpl_gre_init(void)
 {
-	return 0;
+    return 0;
 }
 
 static inline void rpl_gre_exit(void)
@@ -46,8 +46,8 @@ static inline void rpl_gre_exit(void)
 #ifdef CONFIG_INET
 #ifndef HAVE_NAME_ASSIGN_TYPE
 static inline struct net_device *rpl_gretap_fb_dev_create(
-	struct net *net, const char *name, u8 name_assign_type) {
-	return gretap_fb_dev_create(net, name);
+    struct net *net, const char *name, u8 name_assign_type) {
+    return gretap_fb_dev_create(net, name);
 }
 #define gretap_fb_dev_create rpl_gretap_fb_dev_create
 #endif
@@ -59,15 +59,15 @@ static inline struct net_device *rpl_gretap_fb_dev_create(
 #ifndef HAVE_GRE_CALC_HLEN
 static inline int gre_calc_hlen(__be16 o_flags)
 {
-	int addend = 4;
+    int addend = 4;
 
-	if (o_flags & TUNNEL_CSUM)
-		addend += 4;
-	if (o_flags & TUNNEL_KEY)
-		addend += 4;
-	if (o_flags & TUNNEL_SEQ)
-		addend += 4;
-	return addend;
+    if (o_flags & TUNNEL_CSUM)
+        addend += 4;
+    if (o_flags & TUNNEL_KEY)
+        addend += 4;
+    if (o_flags & TUNNEL_SEQ)
+        addend += 4;
+    return addend;
 }
 
 #define ip_gre_calc_hlen gre_calc_hlen
@@ -80,74 +80,74 @@ static inline int gre_calc_hlen(__be16 o_flags)
 #define tnl_flags_to_gre_flags rpl_tnl_flags_to_gre_flags
 static inline __be16 rpl_tnl_flags_to_gre_flags(__be16 tflags)
 {
-	__be16 flags = 0;
+    __be16 flags = 0;
 
-	if (tflags & TUNNEL_CSUM)
-		flags |= GRE_CSUM;
-	if (tflags & TUNNEL_ROUTING)
-		flags |= GRE_ROUTING;
-	if (tflags & TUNNEL_KEY)
-		flags |= GRE_KEY;
-	if (tflags & TUNNEL_SEQ)
-		flags |= GRE_SEQ;
-	if (tflags & TUNNEL_STRICT)
-		flags |= GRE_STRICT;
-	if (tflags & TUNNEL_REC)
-		flags |= GRE_REC;
-	if (tflags & TUNNEL_VERSION)
-		flags |= GRE_VERSION;
+    if (tflags & TUNNEL_CSUM)
+        flags |= GRE_CSUM;
+    if (tflags & TUNNEL_ROUTING)
+        flags |= GRE_ROUTING;
+    if (tflags & TUNNEL_KEY)
+        flags |= GRE_KEY;
+    if (tflags & TUNNEL_SEQ)
+        flags |= GRE_SEQ;
+    if (tflags & TUNNEL_STRICT)
+        flags |= GRE_STRICT;
+    if (tflags & TUNNEL_REC)
+        flags |= GRE_REC;
+    if (tflags & TUNNEL_VERSION)
+        flags |= GRE_VERSION;
 
-	return flags;
+    return flags;
 }
 
 #define gre_flags_to_tnl_flags rpl_gre_flags_to_tnl_flags
 static inline __be16 rpl_gre_flags_to_tnl_flags(__be16 flags)
 {
-	__be16 tflags = 0;
+    __be16 tflags = 0;
 
-	if (flags & GRE_CSUM)
-		tflags |= TUNNEL_CSUM;
-	if (flags & GRE_ROUTING)
-		tflags |= TUNNEL_ROUTING;
-	if (flags & GRE_KEY)
-		tflags |= TUNNEL_KEY;
-	if (flags & GRE_SEQ)
-		tflags |= TUNNEL_SEQ;
-	if (flags & GRE_STRICT)
-		tflags |= TUNNEL_STRICT;
-	if (flags & GRE_REC)
-		tflags |= TUNNEL_REC;
-	if (flags & GRE_VERSION)
-		tflags |= TUNNEL_VERSION;
+    if (flags & GRE_CSUM)
+        tflags |= TUNNEL_CSUM;
+    if (flags & GRE_ROUTING)
+        tflags |= TUNNEL_ROUTING;
+    if (flags & GRE_KEY)
+        tflags |= TUNNEL_KEY;
+    if (flags & GRE_SEQ)
+        tflags |= TUNNEL_SEQ;
+    if (flags & GRE_STRICT)
+        tflags |= TUNNEL_STRICT;
+    if (flags & GRE_REC)
+        tflags |= TUNNEL_REC;
+    if (flags & GRE_VERSION)
+        tflags |= TUNNEL_VERSION;
 
-	return tflags;
+    return tflags;
 }
 #define gre_tnl_flags_to_gre_flags rpl_gre_tnl_flags_to_gre_flags
 static inline __be16 rpl_gre_tnl_flags_to_gre_flags(__be16 tflags)
 {
-	__be16 flags = 0;
+    __be16 flags = 0;
 
-	if (tflags & TUNNEL_CSUM)
-		flags |= GRE_CSUM;
-	if (tflags & TUNNEL_ROUTING)
-		flags |= GRE_ROUTING;
-	if (tflags & TUNNEL_KEY)
-		flags |= GRE_KEY;
-	if (tflags & TUNNEL_SEQ)
-		flags |= GRE_SEQ;
-	if (tflags & TUNNEL_STRICT)
-		flags |= GRE_STRICT;
-	if (tflags & TUNNEL_REC)
-		flags |= GRE_REC;
-	if (tflags & TUNNEL_VERSION)
-		flags |= GRE_VERSION;
+    if (tflags & TUNNEL_CSUM)
+        flags |= GRE_CSUM;
+    if (tflags & TUNNEL_ROUTING)
+        flags |= GRE_ROUTING;
+    if (tflags & TUNNEL_KEY)
+        flags |= GRE_KEY;
+    if (tflags & TUNNEL_SEQ)
+        flags |= GRE_SEQ;
+    if (tflags & TUNNEL_STRICT)
+        flags |= GRE_STRICT;
+    if (tflags & TUNNEL_REC)
+        flags |= GRE_REC;
+    if (tflags & TUNNEL_VERSION)
+        flags |= GRE_VERSION;
 
-	return flags;
+    return flags;
 }
 
 #define gre_build_header rpl_gre_build_header
 void rpl_gre_build_header(struct sk_buff *skb, const struct tnl_ptk_info *tpi,
-			  int hdr_len);
+              int hdr_len);
 
 int rpl_ipgre_init(void);
 void rpl_ipgre_fini(void);
@@ -160,11 +160,11 @@ void rpl_gre_exit(void);
 
 #define gretap_fb_dev_create rpl_gretap_fb_dev_create
 struct net_device *rpl_gretap_fb_dev_create(struct net *net, const char *name,
-					u8 name_assign_type);
+                    u8 name_assign_type);
 
 #define gre_parse_header rpl_gre_parse_header
 int rpl_gre_parse_header(struct sk_buff *skb, struct tnl_ptk_info *tpi,
-			 bool *csum_err, __be16 proto, int nhs);
+             bool *csum_err, __be16 proto, int nhs);
 
 #define gre_fb_xmit rpl_gre_fb_xmit
 netdev_tx_t rpl_gre_fb_xmit(struct sk_buff *skb);

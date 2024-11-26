@@ -6,23 +6,23 @@
 #ifndef HAVE_POSSIBLE_NET_T
 typedef struct {
 #ifdef CONFIG_NET_NS
-	struct net *net;
+    struct net *net;
 #endif
 } possible_net_t;
 
 static inline void rpl_write_pnet(possible_net_t *pnet, struct net *net)
 {
 #ifdef CONFIG_NET_NS
-	pnet->net = net;
+    pnet->net = net;
 #endif
 }
 
 static inline struct net *rpl_read_pnet(const possible_net_t *pnet)
 {
 #ifdef CONFIG_NET_NS
-	return pnet->net;
+    return pnet->net;
 #else
-	return &init_net;
+    return &init_net;
 #endif
 }
 #else /* Linux >= 4.1 */

@@ -7,12 +7,12 @@
 #include <linux/rcupdate.h>
 
 static inline void rb_link_node_rcu(struct rb_node *node, struct rb_node *parent,
-				    struct rb_node **rb_link)
+                    struct rb_node **rb_link)
 {
-	node->__rb_parent_color = (unsigned long)parent;
-	node->rb_left = node->rb_right = NULL;
+    node->__rb_parent_color = (unsigned long)parent;
+    node->rb_left = node->rb_right = NULL;
 
-	rcu_assign_pointer(*rb_link, node);
+    rcu_assign_pointer(*rb_link, node);
 }
 #endif
 

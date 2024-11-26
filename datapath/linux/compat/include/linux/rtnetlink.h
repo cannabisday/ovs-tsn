@@ -7,7 +7,7 @@
 #ifdef CONFIG_PROVE_LOCKING
 static inline int lockdep_rtnl_is_held(void)
 {
-	return 1;
+    return 1;
 }
 #endif
 #endif
@@ -20,9 +20,9 @@ static inline int lockdep_rtnl_is_held(void)
  * Do an rcu_dereference(p), but check caller either holds rcu_read_lock()
  * or RTNL. Note : Please prefer rtnl_dereference() or rcu_dereference()
  */
-#define rcu_dereference_rtnl(p)					\
-	rcu_dereference_check(p, rcu_read_lock_held() ||	\
-				 lockdep_rtnl_is_held())
+#define rcu_dereference_rtnl(p)                    \
+    rcu_dereference_check(p, rcu_read_lock_held() ||    \
+                 lockdep_rtnl_is_held())
 #endif
 
 #ifndef rtnl_dereference
@@ -34,8 +34,8 @@ static inline int lockdep_rtnl_is_held(void)
  * both the smp_read_barrier_depends() and the ACCESS_ONCE(), because
  * caller holds RTNL.
  */
-#define rtnl_dereference(p)					\
-	rcu_dereference_protected(p, lockdep_rtnl_is_held())
+#define rtnl_dereference(p)                    \
+    rcu_dereference_protected(p, lockdep_rtnl_is_held())
 #endif
 
 #endif /* linux/rtnetlink.h wrapper */

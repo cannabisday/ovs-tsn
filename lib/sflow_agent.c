@@ -19,15 +19,15 @@ static void sfl_agent_jumpTableRemove(SFLAgent *agent, SFLSampler *sampler);
 */
 
 void sfl_agent_init(SFLAgent *agent,
-		    SFLAddress *myIP, /* IP address of this agent in net byte order */
-		    u_int32_t subId,  /* agent_sub_id */
-		    time_t bootTime,  /* agent boot time */
-		    time_t now,       /* time now */
-		    void *magic,      /* ptr to pass back in logging and alloc fns */
-		    allocFn_t allocFn,
-		    freeFn_t freeFn,
-		    errorFn_t errorFn,
-		    sendFn_t sendFn)
+            SFLAddress *myIP, /* IP address of this agent in net byte order */
+            u_int32_t subId,  /* agent_sub_id */
+            time_t bootTime,  /* agent boot time */
+            time_t now,       /* time now */
+            void *magic,      /* ptr to pass back in logging and alloc fns */
+            allocFn_t allocFn,
+            freeFn_t freeFn,
+            errorFn_t errorFn,
+            sendFn_t sendFn)
 {
     /* first clear everything */
     memset(agent, 0, sizeof(*agent));
@@ -44,11 +44,11 @@ void sfl_agent_init(SFLAgent *agent,
 
 #ifdef SFLOW_DO_SOCKET
     if(sendFn == NULL) {
-	/* open the socket - really need one for v4 and another for v6? */
-	if((agent->receiverSocket4 = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
-	    sfl_agent_sysError(agent, "agent", "IPv4 socket open failed");
-	if((agent->receiverSocket6 = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP)) == -1)
-	    sfl_agent_sysError(agent, "agent", "IPv6 socket open failed");
+    /* open the socket - really need one for v4 and another for v6? */
+    if((agent->receiverSocket4 = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
+        sfl_agent_sysError(agent, "agent", "IPv4 socket open failed");
+    if((agent->receiverSocket6 = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP)) == -1)
+        sfl_agent_sysError(agent, "agent", "IPv6 socket open failed");
     }
 #endif
 }
@@ -66,23 +66,23 @@ void sfl_agent_release(SFLAgent *agent)
     SFLReceiver *rcv = agent->receivers;
 
     for(; sm != NULL; ) {
-	SFLSampler *nextSm = sm->nxt;
-	sflFree(agent, sm);
-	sm = nextSm;
+    SFLSampler *nextSm = sm->nxt;
+    sflFree(agent, sm);
+    sm = nextSm;
     }
     agent->samplers = NULL;
 
     for(; pl != NULL; ) {
-	SFLPoller *nextPl = pl->nxt;
-	sflFree(agent, pl);
-	pl = nextPl;
+    SFLPoller *nextPl = pl->nxt;
+    sflFree(agent, pl);
+    pl = nextPl;
     }
     agent->pollers = NULL;
 
     for(; rcv != NULL; ) {
-	SFLReceiver *nextRcv = rcv->nxt;
-	sflFree(agent, rcv);
-	rcv = nextRcv;
+    SFLReceiver *nextRcv = rcv->nxt;
+    sflFree(agent, rcv);
+    rcv = nextRcv;
     }
     agent->receivers = NULL;
 
@@ -102,18 +102,18 @@ void sfl_agent_release(SFLAgent *agent)
 void sfl_agent_set_agentAddress(SFLAgent *agent, SFLAddress *addr)
 {
     if(addr && memcmp(addr, &agent->myIP, sizeof(agent->myIP)) != 0) {
-	/* change of address */
-	agent->myIP = *addr; /* structure copy */
-	/* reset sequence numbers here? */
+    /* change of address */
+    agent->myIP = *addr; /* structure copy */
+    /* reset sequence numbers here? */
     }
 }
 
 void sfl_agent_set_agentSubId(SFLAgent *agent, u_int32_t subId)
 {
     if(subId != agent->subId) {
-	/* change of subId */
-	agent->subId = subId;
-	/* reset sequence numbers here? */
+    /* change of subId */
+    agent->subId = subId;
+    /* reset sequence numbers here? */
     }
 }
 
@@ -150,11 +150,11 @@ SFLReceiver *sfl_agent_addReceiver(SFLAgent *agent)
     sfl_receiver_init(rcv, agent);
     /* add to end of list - to preserve the receiver index numbers for existing receivers */
     {
-	SFLReceiver *r, *prev = NULL;
-	for(r = agent->receivers; r != NULL; prev = r, r = r->nxt);
-	if(prev) prev->nxt = rcv;
-	else agent->receivers = rcv;
-	rcv->nxt = NULL;
+    SFLReceiver *r, *prev = NULL;
+    for(r = agent->receivers; r != NULL; prev = r, r = r->nxt);
+    if(prev) prev->nxt = rcv;
+    else agent->receivers = rcv;
+    rcv->nxt = NULL;
     }
     return rcv;
 }
@@ -189,30 +189,30 @@ SFLSampler *sfl_agent_addSampler(SFLAgent *agent, SFLDataSource_instance *pdsi)
     /* Keep the list sorted. */
     SFLSampler *prev = NULL, *sm = agent->samplers;
     for(; sm != NULL; prev = sm, sm = sm->nxt) {
-	int64_t cmp = sfl_dsi_compare(pdsi, &sm->dsi);
-	if(cmp == 0) return sm;  /* found - return existing one */
-	if(cmp < 0) break;       /* insert here */
+    int64_t cmp = sfl_dsi_compare(pdsi, &sm->dsi);
+    if(cmp == 0) return sm;  /* found - return existing one */
+    if(cmp < 0) break;       /* insert here */
     }
     /* either we found the insert point, or reached the end of the list...*/
 
     {
-	SFLSampler *newsm = (SFLSampler *)sflAlloc(agent, sizeof(SFLSampler));
-	sfl_sampler_init(newsm, agent, pdsi);
-	if(prev) prev->nxt = newsm;
-	else agent->samplers = newsm;
-	newsm->nxt = sm;
+    SFLSampler *newsm = (SFLSampler *)sflAlloc(agent, sizeof(SFLSampler));
+    sfl_sampler_init(newsm, agent, pdsi);
+    if(prev) prev->nxt = newsm;
+    else agent->samplers = newsm;
+    newsm->nxt = sm;
 
-	/* see if we should go in the ifIndex jumpTable */
-	if(SFL_DS_CLASS(newsm->dsi) == 0) {
-	    SFLSampler *test = sfl_agent_getSamplerByIfIndex(agent, SFL_DS_INDEX(newsm->dsi));
-	    if(test && (SFL_DS_INSTANCE(newsm->dsi) < SFL_DS_INSTANCE(test->dsi))) {
-		/* replace with this new one because it has a lower ds_instance number */
-		sfl_agent_jumpTableRemove(agent, test);
-		test = NULL;
-	    }
-	    if(test == NULL) sfl_agent_jumpTableAdd(agent, newsm);
-	}
-	return newsm;
+    /* see if we should go in the ifIndex jumpTable */
+    if(SFL_DS_CLASS(newsm->dsi) == 0) {
+        SFLSampler *test = sfl_agent_getSamplerByIfIndex(agent, SFL_DS_INDEX(newsm->dsi));
+        if(test && (SFL_DS_INSTANCE(newsm->dsi) < SFL_DS_INSTANCE(test->dsi))) {
+        /* replace with this new one because it has a lower ds_instance number */
+        sfl_agent_jumpTableRemove(agent, test);
+        test = NULL;
+        }
+        if(test == NULL) sfl_agent_jumpTableAdd(agent, newsm);
+    }
+    return newsm;
     }
 }
 
@@ -222,25 +222,25 @@ SFLSampler *sfl_agent_addSampler(SFLAgent *agent, SFLDataSource_instance *pdsi)
 */
 
 SFLPoller *sfl_agent_addPoller(SFLAgent *agent,
-			       SFLDataSource_instance *pdsi,
-			       void *magic,         /* ptr to pass back in getCountersFn() */
-			       getCountersFn_t getCountersFn)
+                   SFLDataSource_instance *pdsi,
+                   void *magic,         /* ptr to pass back in getCountersFn() */
+                   getCountersFn_t getCountersFn)
 {
     /* keep the list sorted */
     SFLPoller *prev = NULL, *pl = agent->pollers;
     for(; pl != NULL; prev = pl, pl = pl->nxt) {
-	int64_t cmp = sfl_dsi_compare(pdsi, &pl->dsi);
-	if(cmp == 0) return pl;  /* found - return existing one */
-	if(cmp < 0) break;       /* insert here */
+    int64_t cmp = sfl_dsi_compare(pdsi, &pl->dsi);
+    if(cmp == 0) return pl;  /* found - return existing one */
+    if(cmp < 0) break;       /* insert here */
     }
     /* either we found the insert point, or reached the end of the list... */
     {
-	SFLPoller *newpl = (SFLPoller *)sflAlloc(agent, sizeof(SFLPoller));
-	sfl_poller_init(newpl, agent, pdsi, magic, getCountersFn);
-	if(prev) prev->nxt = newpl;
-	else agent->pollers = newpl;
-	newpl->nxt = pl;
-	return newpl;
+    SFLPoller *newpl = (SFLPoller *)sflAlloc(agent, sizeof(SFLPoller));
+    sfl_poller_init(newpl, agent, pdsi, magic, getCountersFn);
+    if(prev) prev->nxt = newpl;
+    else agent->pollers = newpl;
+    newpl->nxt = pl;
+    return newpl;
     }
 }
 
@@ -254,13 +254,13 @@ int sfl_agent_removeSampler(SFLAgent *agent, SFLDataSource_instance *pdsi)
     /* find it, unlink it and free it */
     SFLSampler *prev = NULL, *sm = agent->samplers;
     for(; sm != NULL; prev = sm, sm = sm->nxt) {
-	if(sfl_dsi_compare(pdsi, &sm->dsi) == 0) {
-	    if(prev == NULL) agent->samplers = sm->nxt;
-	    else prev->nxt = sm->nxt;
-	    sfl_agent_jumpTableRemove(agent, sm);
-	    sflFree(agent, sm);
-	    return 1;
-	}
+    if(sfl_dsi_compare(pdsi, &sm->dsi) == 0) {
+        if(prev == NULL) agent->samplers = sm->nxt;
+        else prev->nxt = sm->nxt;
+        sfl_agent_jumpTableRemove(agent, sm);
+        sflFree(agent, sm);
+        return 1;
+    }
     }
     /* not found */
     return 0;
@@ -276,12 +276,12 @@ int sfl_agent_removePoller(SFLAgent *agent, SFLDataSource_instance *pdsi)
     /* find it, unlink it and free it */
     SFLPoller *prev = NULL, *pl = agent->pollers;
     for(; pl != NULL; prev = pl, pl = pl->nxt) {
-	if(sfl_dsi_compare(pdsi, &pl->dsi) == 0) {
-	    if(prev == NULL) agent->pollers = pl->nxt;
-	    else prev->nxt = pl->nxt;
-	    sflFree(agent, pl);
-	    return 1;
-	}
+    if(sfl_dsi_compare(pdsi, &pl->dsi) == 0) {
+        if(prev == NULL) agent->pollers = pl->nxt;
+        else prev->nxt = pl->nxt;
+        sflFree(agent, pl);
+        return 1;
+    }
     }
     /* not found */
     return 0;
@@ -310,10 +310,10 @@ static void sfl_agent_jumpTableRemove(SFLAgent *agent, SFLSampler *sampler)
     SFLSampler *search = agent->jumpTable[hashIndex], *prev = NULL;
     for( ; search != NULL; prev = search, search = search->hash_nxt) if(search == sampler) break;
     if(search) {
-	// found - unlink
-	if(prev) prev->hash_nxt = search->hash_nxt;
-	else agent->jumpTable[hashIndex] = search->hash_nxt;
-	search->hash_nxt = NULL;
+    // found - unlink
+    if(prev) prev->hash_nxt = search->hash_nxt;
+    else agent->jumpTable[hashIndex] = search->hash_nxt;
+    search->hash_nxt = NULL;
     }
 }
 
@@ -346,7 +346,7 @@ SFLSampler *sfl_agent_getSampler(SFLAgent *agent, SFLDataSource_instance *pdsi)
     /* find it and return it */
     SFLSampler *sm = agent->samplers;
     for(; sm != NULL; sm = sm->nxt)
-	if(sfl_dsi_compare(pdsi, &sm->dsi) == 0) return sm;
+    if(sfl_dsi_compare(pdsi, &sm->dsi) == 0) return sm;
     /* not found */
     return NULL;
 }
@@ -361,7 +361,7 @@ SFLPoller *sfl_agent_getPoller(SFLAgent *agent, SFLDataSource_instance *pdsi)
     /* find it and return it */
     SFLPoller *pl = agent->pollers;
     for(; pl != NULL; pl = pl->nxt)
-	if(sfl_dsi_compare(pdsi, &pl->dsi) == 0) return pl;
+    if(sfl_dsi_compare(pdsi, &pl->dsi) == 0) return pl;
     /* not found */
     return NULL;
 }
@@ -376,7 +376,7 @@ SFLPoller *sfl_agent_getPollerByBridgePort(SFLAgent *agent, uint32_t port_no)
   /* find it and return it */
     SFLPoller *pl = agent->pollers;
     for(; pl != NULL; pl = pl->nxt)
-	if(pl->bridgePort == port_no) return pl;
+    if(pl->bridgePort == port_no) return pl;
     /* not found */
     return NULL;
 }
@@ -391,7 +391,7 @@ SFLReceiver *sfl_agent_getReceiver(SFLAgent *agent, u_int32_t receiverIndex)
     u_int32_t rcvIdx = 0;
     SFLReceiver *rcv = agent->receivers;
     for(;  rcv != NULL; rcv = rcv->nxt)
-	if(receiverIndex == ++rcvIdx) return rcv;
+    if(receiverIndex == ++rcvIdx) return rcv;
 
     /* not found - ran off the end of the table */
     return NULL;
@@ -446,20 +446,20 @@ void sfl_agent_resetReceiver(SFLAgent *agent, SFLReceiver *receiver)
     u_int32_t rcvIdx = 0;
     SFLReceiver *rcv = agent->receivers;
     for(; rcv != NULL; rcv = rcv->nxt) {
-	rcvIdx++; /* thanks to Diego Valverde for pointing out this bugfix */
-	if(rcv == receiver) {
-	    /* now tell anyone that is using it to stop */
-	    SFLSampler *sm = agent->samplers;
-	    SFLPoller *pl = agent->pollers;
+    rcvIdx++; /* thanks to Diego Valverde for pointing out this bugfix */
+    if(rcv == receiver) {
+        /* now tell anyone that is using it to stop */
+        SFLSampler *sm = agent->samplers;
+        SFLPoller *pl = agent->pollers;
 
-	    for(; sm != NULL; sm = sm->nxt)
-		if(sfl_sampler_get_sFlowFsReceiver(sm) == rcvIdx) sfl_sampler_set_sFlowFsReceiver(sm, 0);
+        for(; sm != NULL; sm = sm->nxt)
+        if(sfl_sampler_get_sFlowFsReceiver(sm) == rcvIdx) sfl_sampler_set_sFlowFsReceiver(sm, 0);
 
-	    for(; pl != NULL; pl = pl->nxt)
-		if(sfl_poller_get_sFlowCpReceiver(pl) == rcvIdx) sfl_poller_set_sFlowCpReceiver(pl, 0);
+        for(; pl != NULL; pl = pl->nxt)
+        if(sfl_poller_get_sFlowCpReceiver(pl) == rcvIdx) sfl_poller_set_sFlowCpReceiver(pl, 0);
 
-	    break;
-	}
+        break;
+    }
     }
 }
 
@@ -475,8 +475,8 @@ void sfl_agent_error(SFLAgent *agent, char *modName, char *msg)
     snprintf(errm, sizeof errm, "sfl_agent_error: %s: %s\n", modName, msg);
     if(agent->errorFn) (*agent->errorFn)(agent->magic, agent, errm);
     else {
-	fprintf(stderr, "%s\n", errm);
-	fflush(stderr);
+    fprintf(stderr, "%s\n", errm);
+    fflush(stderr);
     }
 }
 
@@ -491,8 +491,8 @@ void sfl_agent_sysError(SFLAgent *agent, char *modName, char *msg)
     snprintf(errm, sizeof errm, "sfl_agent_sysError: %s: %s (errno = %d - %s)\n", modName, msg, errno, ovs_strerror(errno));
     if(agent->errorFn) (*agent->errorFn)(agent->magic, agent, errm);
     else {
-	fprintf(stderr, "%s\n", errm);
-	fflush(stderr);
+    fprintf(stderr, "%s\n", errm);
+    fflush(stderr);
     }
 }
 

@@ -36,10 +36,10 @@
  * |                Label                  | TC  |S|       TTL     |
  * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  *
- *	Label:  Label Value, 20 bits
- *	TC:     Traffic Class field, 3 bits
- *	S:      Bottom of Stack, 1 bit
- *	TTL:    Time to Live, 8 bits
+ *    Label:  Label Value, 20 bits
+ *    TC:     Traffic Class field, 3 bits
+ *    S:      Bottom of Stack, 1 bit
+ *    TTL:    Time to Live, 8 bits
  */
 
 typedef struct MPLSHdr {

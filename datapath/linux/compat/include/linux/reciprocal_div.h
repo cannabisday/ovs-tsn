@@ -21,8 +21,8 @@
 
 #define reciprocal_value rpl_reciprocal_value
 struct reciprocal_value {
-	u32 m;
-	u8 sh1, sh2;
+    u32 m;
+    u8 sh1, sh2;
 };
 
 struct reciprocal_value rpl_reciprocal_value(u32 d);
@@ -30,8 +30,8 @@ struct reciprocal_value rpl_reciprocal_value(u32 d);
 #define reciprocal_divide rpl_reciprocal_divide
 static inline u32 rpl_reciprocal_divide(u32 a, struct reciprocal_value R)
 {
-	u32 t = (u32)(((u64)a * R.m) >> 32);
-	return (t + ((a - t) >> R.sh1)) >> R.sh2;
+    u32 t = (u32)(((u64)a * R.m) >> 32);
+    return (t + ((a - t) >> R.sh1)) >> R.sh2;
 }
 
 #endif /* _LINUX_RECIPROCAL_DIV_WRAPPER_H */

@@ -309,13 +309,13 @@ struct udpif_key {
     uint32_t key_recirc_id;   /* Non-zero if reference is held by the ukey. */
     struct recirc_refs recircs;  /* Action recirc IDs with references held. */
 
-#define OFFL_REBAL_INTVL_MSEC  3000	/* dynamic offload rebalance freq */
-    struct netdev *in_netdev;		/* in_odp_port's netdev */
-    bool offloaded;			/* True if flow is offloaded */
-    uint64_t flow_pps_rate;		/* Packets-Per-Second rate */
-    long long int flow_time;		/* last pps update time */
-    uint64_t flow_packets;		/* #pkts seen in interval */
-    uint64_t flow_backlog_packets;	/* prev-mode #pkts (offl or kernel) */
+#define OFFL_REBAL_INTVL_MSEC  3000    /* dynamic offload rebalance freq */
+    struct netdev *in_netdev;        /* in_odp_port's netdev */
+    bool offloaded;            /* True if flow is offloaded */
+    uint64_t flow_pps_rate;        /* Packets-Per-Second rate */
+    long long int flow_time;        /* last pps update time */
+    uint64_t flow_packets;        /* #pkts seen in interval */
+    uint64_t flow_backlog_packets;    /* prev-mode #pkts (offl or kernel) */
 };
 
 /* Datapath operation with optional ukey attached. */
@@ -3166,7 +3166,7 @@ rebalance_device(struct udpif *udpif, struct udpif_key **offloaded_flows,
     /*
      * Phase 2; determine how many offloaded flows to churn.
      */
-#define	OFFL_REBAL_MAX_CHURN    1024
+#define    OFFL_REBAL_MAX_CHURN    1024
     int churn_count = 0;
     while (churn_count < OFFL_REBAL_MAX_CHURN && churn_count < offload_count
            && churn_count < pending_count) {
