@@ -1,0 +1,48 @@
+
+ovs port perf integration
+
+normal files
+ofproto.c
+	include udp_client.h and ohters
+	call start_udp_cliet
+ofp-port.c
+	null
+ofproto.h
+	null
+ofproto-provider.h
+	include udp_client.h
+udp_client.c (add)
+udp_server.c (add)
+udp_client.h (add)
+udp_server.h (add)
+
+make files
+Makefile.am
+	lib_LIBRARIES = libudp.a
+	libudp_a_SOURCES = ofproto/udp_client.c ofproto/udp_server.c
+ofproto/automake.mk
+	 \
+	ofproto/udp_client.c \
+	ofproto/udp_client.h \
+	ofproto/udp_server.c \
+	ofproto/udp_server.h
+	dist?
+
+
+build
+autoreconf -i
+./configure
+sudo make -j4
+
+start
+sudo ovsdb-server --remote=punix:/usr/local/var/run/openvswitch/db.sock --remote=db:Open_vSwitch,Open_vSwitch,manager_options --private-key=db:Open_vSwitch,SSL,private_key --certificate=db:Open_vSwitch,SSL,certificate --bootstrap-ca-cert=db:Open_vSwitch,SSL,ca_cert --pidfile --detach --log-file
+sudo /usr/local/share/openvswitch/scripts/ovs-ctl start
+
+
+mininet - wifi
+ovs port perf
+scenario
+
+
+log path
+/usr/local/var/log/openvswitch/
