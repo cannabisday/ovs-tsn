@@ -2945,7 +2945,7 @@ if (speed_ptr) {
     VLOG_WARN("update_port start of ofproto.c");
 
     //pp.curr = pp.curr - (1 << 6) + (1 << 5) - (1 << 11) + (1 << 12);
-    if (speed > 9) {
+    if (speed = 1) {
         VLOG_WARN("curr_speed set by speed lv1: %u\n AT", speed);
 
         pp.curr_speed = 100*1000; //orig 10*1000

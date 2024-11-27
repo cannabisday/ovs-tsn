@@ -43,7 +43,7 @@ uint32_t measure_performance(const char *server_ip, int port_number) {
     memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(port_number);
-    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");  // 서버의 IP 주소 명확히 설정
+    server_addr.sin_addr.s_addr = inet_addr(server_ip);  // 서버의 IP 주소 명확히 설정
 
     // 서버 주소 출력
     printf("Sending data to server at IP: %s, Port: %d\n", server_ip, port_number);

@@ -80,3 +80,10 @@ testsuite.tmp.orig
 /cxx-check
 !/ovsdb/ovsdb-doc
 
+!README.md
+!buildnrun.sh
+!include/port_speed_map.h
+!ovs_up.txt
+!run.sh
+!test34.sh
+
