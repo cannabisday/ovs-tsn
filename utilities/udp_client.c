@@ -53,7 +53,7 @@ uint32_t measure_performance(const char *server_ip, int port_number) {
     for (int i = 0; i < DURATION; ++i) {
         // 전송할 데이터 준비
         snprintf(buffer, BUFFER_SIZE, "Packet number: %d", i + 1);
-
+  
         // 서버로 데이터 전송
         if (sendto(sockfd, buffer, strlen(buffer), 0, (const struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
             perror("Failed to send packet");

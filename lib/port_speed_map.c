@@ -131,7 +131,7 @@ uint32_t get_port_speed(const char *port_name) {
     uint32_t new_speed = 2;  // 포트 속도를 설정할 새로운 속도 값
 
 
-
+ 
     if (port_name == NULL) {
         VLOG_WARN("ovs_psm)Port name is NULL, returning default speed of %u\n", default_speed);
         return default_speed;  // 포트 이름이 없을 경우 기본 속도 반환
@@ -151,7 +151,7 @@ uint32_t get_port_speed(const char *port_name) {
             bandwidths[count++] = bw; 
             printf("tested ip %s , port %d, bw %u \n", nodes[i].ip, nodes[i].port, bw);
         }
-
+ 
         int count_1 = 0, count_10 = 0;
         double total_weight = 0 , weight_sum = 0;
         for (int i = 0; i < count; i++) {

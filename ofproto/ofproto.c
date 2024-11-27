@@ -2912,7 +2912,7 @@ if (speed_ptr) {
     //printf("joo)-ofproto portspeed %u\n", speed_a);
 
 
- 
+  
     sscanf(ofproto->name, "%*[^0-9]%d", &bridge_num); // 브릿지 이름의 숫자 부분 추출
     // 포트 이름에서 숫자 추출
     sscanf(pp.name, "%*[^t]t%02d", &port_num); 

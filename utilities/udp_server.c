@@ -61,7 +61,7 @@ void *udp_server_thread(void *arg) {
         close(sockfd);
         return NULL;
     }
- 
+  
     while (1) {
         // 여기에서 서버 상태를 확인하기 위한 디버그 메시지를 출력합니다.
         printf("Checking server status before receiving data...\n");
