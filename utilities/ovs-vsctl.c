@@ -1641,7 +1641,7 @@ cmd_list_br(struct ctl_context *ctx)
     if (!real && !fake) {
         real = fake = true;
     }
-
+ 
     vsctl_context_populate_cache(ctx);
 
     svec_init(&bridges);

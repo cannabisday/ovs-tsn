@@ -148,7 +148,7 @@ uint32_t get_port_speed(const char *port_name) {
         int count = 0;
         for (int i = 0; i <node_count; i++){
             uint32_t bw = start_udp_client(nodes[i].ip, nodes[i].port);
-            bandwidths[count++] = bw;
+            bandwidths[count++] = bw; 
             printf("tested ip %s , port %d, bw %u \n", nodes[i].ip, nodes[i].port, bw);
         }
 

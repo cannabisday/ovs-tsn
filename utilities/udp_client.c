@@ -61,7 +61,7 @@ uint32_t measure_performance(const char *server_ip, int port_number) {
             printf("Sent: %s to server IP: %s, Port: %d\n", buffer, inet_ntoa(server_addr.sin_addr), ntohs(server_addr.sin_port));
             packets_sent++;
         }
-
+ 
         // 서버로부터 데이터 수신 (타임아웃 적용됨)
         int n = recvfrom(sockfd, buffer, BUFFER_SIZE, 0, (struct sockaddr *) &server_addr, &len);
         if (n > 0) {
