@@ -22,6 +22,7 @@ struct shash port_speed_map;
 
 // 포트 속도를 설정할 때 사용할 기본값
 static uint32_t default_speed = 1;
+static uint32_t check_speed = 5;
 
 void init_port_speed_map(void) {
     shash_init(&port_speed_map);
@@ -181,7 +182,7 @@ uint32_t get_port_speed(const char *port_name) {
 
     }
     else {
-        return default_speed;
+        return check_speed;//default_speed;
     }
 
 

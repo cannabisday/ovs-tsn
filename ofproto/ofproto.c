@@ -2928,32 +2928,37 @@ if (speed_ptr) {
 
     uint32_t speed = 0;  // 기본값 0으로 초기화
     if (name != NULL) {
-        VLOG_WARN("lalala Attempting to get port speed for port: %s", formatted_port_name);
         if (name[0] == 'w'){
-            uint32_t speed_result = get_port_speed(name);  // 호출 전 로그를 남김
+            uint32_t speed_result = 1;
+            VLOG_WARN("lalala Attempting to get port speed for port: %s", name);
+            speed_result = get_port_speed(name);
+            //speed = 5;
+
         
-        if (speed_result != 0) {
-            speed = speed_result;
-            VLOG_WARN("lalala joo)-on Port %s speed is: %u\n", name, speed);
-        } else {
-            VLOG_WARN("lalala Failed to get port speed for port: %s, speed is %u\n, defaulting to 0", name, speed);
-        }}
+            if (speed_result != 0) {
+                speed = speed_result;
+                VLOG_WARN("lalala joo)-on Port %s speed is: %u\n", name, speed);
+            } else {
+                VLOG_WARN("lalala Failed to get port speed for port: %s, speed is %u\n, defaulting to 0", name, speed);
+                speed = 1;
+        }
+    }
     } else {
         VLOG_WARN("lalala Port name is NULL, cannot get port speed.");
     }   
 
 
-    VLOG_WARN("update_port start of ofproto.c");
+    VLOG_WARN("update_port start of ofproto.c speedresult = %u\n", speed);
 
     //pp.curr = pp.curr - (1 << 6) + (1 << 5) - (1 << 11) + (1 << 12);
     if (speed = 1) {
         VLOG_WARN("curr_speed set by speed lv1: %u\n AT", speed);
 
-        pp.curr_speed = 100*1000; //orig 10*1000
+        pp.curr_speed = 4000*1000; //orig 10*1000
     }
     else if (speed > 4) {
         VLOG_WARN("curr_speed set by speed lv2: %u\n AT", speed);
-        pp.curr_speed = 10*1000; // orig 5*1000
+        pp.curr_speed = 400*1000; // orig 5*1000
     }    
     VLOG_WARN("Current netdev features: %u\n AT", pp.curr );
     VLOG_WARN("Current speed: %u kbps AT", pp.curr_speed);
