@@ -180,6 +180,9 @@ uint32_t get_port_speed(const char *port_name) {
         return weighted_bandwidth;
 
     }
+    else {
+        return default_speed;
+    }
 
 
 

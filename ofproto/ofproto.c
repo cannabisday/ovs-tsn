@@ -2928,15 +2928,16 @@ if (speed_ptr) {
 
     uint32_t speed = 0;  // 기본값 0으로 초기화
     if (name != NULL) {
-       VLOG_WARN("lalala Attempting to get port speed for port: %s", formatted_port_name);
-
-        uint32_t speed_result = get_port_speed(formatted_port_name);  // 호출 전 로그를 남김
+        VLOG_WARN("lalala Attempting to get port speed for port: %s", formatted_port_name);
+        if (name[0] == 'w'){
+            uint32_t speed_result = get_port_speed(name);  // 호출 전 로그를 남김
+        
         if (speed_result != 0) {
             speed = speed_result;
             VLOG_WARN("lalala joo)-on Port %s speed is: %u\n", name, speed);
         } else {
             VLOG_WARN("lalala Failed to get port speed for port: %s, speed is %u\n, defaulting to 0", name, speed);
-        }
+        }}
     } else {
         VLOG_WARN("lalala Port name is NULL, cannot get port speed.");
     }   

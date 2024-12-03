@@ -1559,7 +1559,7 @@ cmd_add_br(struct ctl_context *ctx)
     //printf("Starting UDP server on port %d for bridge %s...\n", udp_server_port, br_name);
     //start_udp_server(udp_server_port);
 
-    printf("joo)-off %s (bridge) is added and UDP server is opened on port %d\n", br_name, udp_server_port);
+    printf("joo)-off %s (bridge) not but just cmd_add_port comp - (port %d\n", br_name, udp_server_port);
 }
 
 static void
@@ -1831,10 +1831,10 @@ add_port(struct ctl_context *ctx,
         if (ifa->ifa_addr == NULL)
             continue;
 
-        if (strcmp(ifa->ifa_name, "lo") == 0 && ifa->ifa_addr->sa_family == AF_INET) {
+        if (strcmp(ifa->ifa_name, "wlo1.1") == 0 && ifa->ifa_addr->sa_family == AF_INET) {
             if (getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in),
                             hostip, NI_MAXHOST, NULL, 0, NI_NUMERICHOST) == 0) {
-                printf("Found IP address of lo: %s\n", hostip);
+                printf("Found IP address of wlo1.1: %s\n", hostip);
                 break;
             }
         }
@@ -1914,8 +1914,8 @@ add_port(struct ctl_context *ctx,
 
 
     // joo) 포트 이름이 pXXt00 형식인 경우에만 UDP 서버 시작
-    if (strlen(port_name) == 6 && port_name[0] == 'p' && port_name[3] == 't' && port_name[4] == '0' && port_name[5] == '0') {
-        char bridge_num_str[3] = { port_name[1], port_name[2], '\0' };
+    if (strlen(port_name) == 4 && port_name[0] == 'w' && port_name[1] == 'l') {
+        char bridge_num_str[3] = { br_name[2], br_name[3], '\0' };
         udp_server_port = 20000 + atoi(bridge_num_str);
 
         printf("Generated UDP server port number: %d\n", udp_server_port);

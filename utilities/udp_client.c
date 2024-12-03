@@ -11,7 +11,7 @@
 #include <string.h>  // 추가: memset을 사용하기 위해 필요
 
 #define BUFFER_SIZE 2764800
-#define DURATION 10
+#define DURATION 4
 
 // 성능 측정 함수
 uint32_t measure_performance(const char *server_ip, int port_number) {

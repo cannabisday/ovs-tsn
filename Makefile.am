@@ -199,7 +199,7 @@ CLEAN_LOCAL += clean-pycov
 
 # If we're checked out from a Git repository, make sure that every
 # file that is in Git is distributed.
-ALL_LOCAL += dist-hook-git
+#ALL_LOCAL += dist-hook-git
 dist-hook-git: distfiles
 	@if test -e $(srcdir)/.git && (git --version) >/dev/null 2>&1; then \
 	  (cd datapath && $(MAKE) distfiles); \
