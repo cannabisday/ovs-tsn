@@ -21,7 +21,7 @@ VLOG_DEFINE_THIS_MODULE(port_speed_map); // 고유 이름 사용
 struct shash port_speed_map;
 
 // 포트 속도를 설정할 때 사용할 기본값
-static uint32_t default_speed = 1;
+static uint32_t default_speed = 10;
 static uint32_t check_speed = 5;
 
 void init_port_speed_map(void) {
@@ -89,7 +89,7 @@ typedef struct {
 uint32_t get_port_speed(const char *port_name) {
     /*for client*/
     int udp_client_port = 0; 
-    char client_port_str[3] = {port_name[4], port_name[5], '\0' };  // 포트 이름의 마지막 2자리 숫자 추출
+    char client_port_str[3] = {port_name[2], port_name[3], '\0' };  // 포트 이름의 마지막 2자리 숫자 추출
     udp_client_port = 20000 + atoi(client_port_str);
     //char new_port_name = "";
 
@@ -143,14 +143,14 @@ uint32_t get_port_speed(const char *port_name) {
     uint32_t *speed_ptr = shash_find_data(&port_speed_map, port_name);
 
     /*for client arpver*/
-    if (speed_ptr == NULL) {
-        printf("ovs_psm) speed_ptr null ");
+    if (port_name[0] == 'w' && strlen(port_name) == 4){
+        VLOG_WARN("ovs_psm) speed_ptr null node count = %d \n ",node_count);
         uint32_t bandwidths[MAX_NODES];
         int count = 0;
         for (int i = 0; i <node_count; i++){
             uint32_t bw = start_udp_client(nodes[i].ip, nodes[i].port);
             bandwidths[count++] = bw; 
-            printf("tested ip %s , port %d, bw %u \n", nodes[i].ip, nodes[i].port, bw);
+            VLOG_WARN("tested ip %s , port %d, bw %u \n", nodes[i].ip, nodes[i].port, bw);
         }
  
         int count_1 = 0, count_10 = 0;
@@ -177,11 +177,12 @@ uint32_t get_port_speed(const char *port_name) {
             }
         }
         uint32_t weighted_bandwidth = (weight_sum > 0) ? (uint32_t)(total_weight / weight_sum) : default_speed;
-        printf("weighted bw port %s: %u Mbps \n", port_name, weighted_bandwidth);
+        VLOG_WARN("weighted bw port %s: %u Mbps \n", port_name, weighted_bandwidth);
         return weighted_bandwidth;
 
     }
     else {
+        VLOG_WARN("checkspeed  port %s \n", port_name);
         return check_speed;//default_speed;
     }
 

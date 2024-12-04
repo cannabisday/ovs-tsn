@@ -2928,7 +2928,7 @@ if (speed_ptr) {
 
     uint32_t speed = 0;  // 기본값 0으로 초기화
     if (name != NULL) {
-        if (name[0] == 'w'){
+        if (name[0] == 'w'&& strlen(name) == 4){
             uint32_t speed_result = 1;
             VLOG_WARN("lalala Attempting to get port speed for port: %s", name);
             speed_result = get_port_speed(name);

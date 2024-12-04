@@ -11,7 +11,7 @@
 #include <string.h>  // 추가: memset을 사용하기 위해 필요
 
 #define BUFFER_SIZE 2764800
-#define DURATION 4
+#define DURATION 5
 
 // 성능 측정 함수
 uint32_t measure_performance(const char *server_ip, int port_number) {
@@ -32,7 +32,7 @@ uint32_t measure_performance(const char *server_ip, int port_number) {
     printf("Socket created successfully.\n");
 
     // 타임아웃 설정 (5초)
-    tv.tv_sec = 5;  // 타임아웃 시간 (초)
+    tv.tv_sec = 3;  // 타임아웃 시간 (초)
     tv.tv_usec = 0; // 타임아웃 시간 (마이크로초)
     if (setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0) {
         perror("Error setting socket receive timeout");
