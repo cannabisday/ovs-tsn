@@ -12,7 +12,7 @@
 
 #define BUFFER_SIZE 2764800
 #define DURATION 5
-
+ 
 // 성능 측정 함수
 uint32_t measure_performance(const char *server_ip, int port_number) {
     int sockfd;

@@ -2933,7 +2933,7 @@ if (speed_ptr) {
             VLOG_WARN("lalala Attempting to get port speed for port: %s", name);
             speed_result = get_port_speed(name);
             //speed = 5;
-
+ 
         
             if (speed_result != 0) {
                 speed = speed_result;

@@ -130,7 +130,7 @@ uint32_t get_port_speed(const char *port_name) {
 
 
     uint32_t new_speed = 2;  // 포트 속도를 설정할 새로운 속도 값
-
+ 
 
  
     if (port_name == NULL) {

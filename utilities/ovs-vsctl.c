@@ -1904,7 +1904,7 @@ add_port(struct ctl_context *ctx,
         ifaces[i] = ovsrec_interface_insert(ctx->txn);
         ovsrec_interface_set_name(ifaces[i], iface_names[i]);
         post_db_reload_expect_iface(ifaces[i]);
-    }
+    } 
 
     port = ovsrec_port_insert(ctx->txn);
     ovsrec_port_set_name(port, port_name);
